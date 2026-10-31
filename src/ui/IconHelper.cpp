@@ -32,8 +32,11 @@ static QIcon loadSvgIcon(const QString &resourcePath, const QColor &color) {
     // If it doesn't have custom gradients (like cancel.svg), tint black strokes and fills to the toolbar color
     if (!data.contains("linearGradient") && color.isValid()) {
         QByteArray hex = color.name().toUtf8();
-        data.replace("#000000", hex);
         data.replace("var(--ci-primary-color, #000000)", hex);
+        data.replace("var(--ci-primary-color, #000)", hex);
+        data.replace("#000000", hex);
+        data.replace("#000", hex);
+        data.replace("\"black\"", "\"" + hex + "\"");
     }
 
     QBuffer buffer(&data);

@@ -10,6 +10,7 @@ private slots:
     void testToolIcons();
     void testIconPixmaps();
     void testRedesignedIcons();
+    void testIconTinting();
 };
 
 static bool hasVisiblePixels(const QImage &img) {
@@ -101,6 +102,30 @@ void TestIcons::testIconPixmaps() {
         if (hasNonTransparentPixels) break;
     }
     QVERIFY(hasNonTransparentPixels);
+}
+
+void TestIcons::testIconTinting() {
+    QColor tintColor("#E2E8F0");
+    QIcon blurIcon = IconHelper::toolIcon(ToolType::Blur, tintColor);
+    QVERIFY(!blurIcon.isNull());
+    QImage img = blurIcon.pixmap(32, 32).toImage();
+    QVERIFY(!img.isNull());
+
+    bool foundTintedPixel = false;
+    for (int y = 0; y < img.height(); ++y) {
+        for (int x = 0; x < img.width(); ++x) {
+            QRgb rgb = img.pixel(x, y);
+            if (qAlpha(rgb) > 200) {
+                // Must not be black; should be light/white (e.g. red, green, blue > 180)
+                if (qRed(rgb) > 180 && qGreen(rgb) > 180 && qBlue(rgb) > 180) {
+                    foundTintedPixel = true;
+                    break;
+                }
+            }
+        }
+        if (foundTintedPixel) break;
+    }
+    QVERIFY2(foundTintedPixel, "Blur icon was not properly tinted to light/white color in dark mode!");
 }
 
 QTEST_MAIN(TestIcons)
