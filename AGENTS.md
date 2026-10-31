@@ -126,6 +126,14 @@ When modifying this repository, **you must never violate these core invariants**
 - **Rule**: All UI icons reside in `resources/icons/linuxshot-ui-svgs/` and are compiled into the binary via `resources/resources.qrc`.
 - **Rule**: `IconHelper::loadSvgIcon` dynamically tints monochrome `#000000` SVGs to `#E2E8F0` for dark-mode toolbar contrast, while preserving custom color gradients (such as `cancel.svg`). Never hardcode paths to external files on the host filesystem.
 
+### 5. Mandatory Latest Tag Verification Before Changelog Updates
+- **Rule**: Before adding or updating an entry in `CHANGELOG.md`, or bumping the project version, the agent **MUST ALWAYS** check what tag is currently the latest in the repository:
+  ```bash
+  git fetch --tags origin 2>/dev/null || true
+  git tag -l --sort=-v:refname | head -n 1
+  ```
+- **Why**: Bumping versions or updating `CHANGELOG.md` without verifying the latest tag causes version collisions, incorrect semver increments, and release pipeline failures in `.github/workflows/release.yml`.
+
 ---
 
 ## 4. Building, Testing, and Packaging
@@ -179,15 +187,28 @@ The repository's GitHub Actions release workflow (`.github/workflows/release.yml
 3. **Auditing & Traceability**: Clean-room development requires continuous, traceable documentation. A missing changelog entry compromises release integrity.
 
 ### Release Protocol for Future Agents
-When tasked with releasing a new version or preparing an update, follow this strict 6-step checklist:
+When tasked with releasing a new version or preparing an update, follow this strict 7-step checklist:
 
-1. **Step 1: Bump Version in CMakeLists.txt**
-   Update the project version at line 2 of `CMakeLists.txt`:
+1. **Step 1: Inspect the Latest Git Tag (MANDATORY)**
+   Before determining the target version or touching `CHANGELOG.md`, query the repository and remote to identify the highest existing release tag:
+   ```bash
+   git fetch --tags origin 2>/dev/null || true
+   LATEST_TAG=$(git tag -l --sort=-v:refname | head -n 1)
+   echo "Current latest release tag: ${LATEST_TAG}"
+   ```
+   Determine the target Semantic Version (e.g. `v0.2.0`) strictly based on the changes relative to `${LATEST_TAG}`.
+
+2. **Step 2: Bump Version in CMakeLists.txt**
+   Update the project version at lines 2–4 of `CMakeLists.txt`:
    ```cmake
-   project(linuxshot VERSION 0.2.0 LANGUAGES CXX)
+   project(LinuxShot
+       VERSION 0.2.0
+       HOMEPAGE_URL "https://github.com/ameya-deshpande-5056/linuxshot"
+       LANGUAGES CXX
+   )
    ```
 
-2. **Step 2: Update CHANGELOG.md (MANDATORY)**
+3. **Step 3: Update CHANGELOG.md (MANDATORY)**
    Add a new version section at the top of `CHANGELOG.md` under `# Changelog`, using standard [Keep a Changelog](https://keepachangelog.com/) format:
    ```markdown
    ## [0.2.0] - 2026-11-15
@@ -205,25 +226,24 @@ When tasked with releasing a new version or preparing an update, follow this str
    - List of deprecated or removed capabilities...
    ```
 
-3. **Step 3: Update PROJECT_STATUS.md**
+4. **Step 4: Update PROJECT_STATUS.md**
    Document the current milestone and package build artifacts in `PROJECT_STATUS.md`.
 
-4. **Step 4: Run Tests & Verify Packages Locally**
+5. **Step 5: Run Tests & Verify Packages Locally**
    ```bash
-   cmake --build build -j$(nproc)
-   ctest --test-dir build --output-on-failure
+   ./scripts/build.sh
    ./packaging/build-deb.sh 0.2.0
    ./packaging/build-appimage.sh 0.2.0
    ```
 
-5. **Step 5: Commit and Tag**
+6. **Step 6: Commit and Tag**
    ```bash
    git add CMakeLists.txt CHANGELOG.md PROJECT_STATUS.md
    git commit -m "chore(release): prepare v0.2.0"
    git tag -a v0.2.0 -m "Release v0.2.0"
    ```
 
-6. **Step 6: Push to GitHub**
+7. **Step 7: Push to GitHub**
    ```bash
    git push origin main --tags
    ```

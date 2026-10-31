@@ -45,6 +45,13 @@
 4. Update documentation as needed
 5. Keep commits focused and well-described
 
+## Versioning & Releases
+
+- Follows [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`).
+- Always query the latest git tag (`git tag -l --sort=-v:refname | head -n 1`) before updating `CHANGELOG.md` or incrementing the project version.
+- Updating `CHANGELOG.md` is mandatory for all releases; CI checks enforce this.
+- See [`AGENTS.md`](AGENTS.md) for the complete 7-step release checklist.
+
 ## Reporting Issues
 
 Include:
