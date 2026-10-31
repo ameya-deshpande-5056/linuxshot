@@ -1,19 +1,19 @@
 <RCC>
     <qresource prefix="/">
         <file>icons/linuxshot.png</file>
-        <file>icons/lightshot/upload.png</file>
-        <file>icons/lightshot/copy.png</file>
-        <file>icons/lightshot/save.png</file>
-        <file>icons/lightshot/cancel.png</file>
-        <file>icons/lightshot/pen.png</file>
-        <file>icons/lightshot/line.png</file>
-        <file>icons/lightshot/arrow.png</file>
-        <file>icons/lightshot/rect.png</file>
-        <file>icons/lightshot/circle.png</file>
-        <file>icons/lightshot/marker.png</file>
-        <file>icons/lightshot/text.png</file>
-        <file>icons/lightshot/blur.png</file>
-        <file>icons/lightshot/undo.png</file>
+        <file>icons/linuxshot-ui-svgs/arrow-up-right.svg</file>
+        <file>icons/linuxshot-ui-svgs/blur.svg</file>
+        <file>icons/linuxshot-ui-svgs/cancel.svg</file>
+        <file>icons/linuxshot-ui-svgs/circle.svg</file>
+        <file>icons/linuxshot-ui-svgs/copy.svg</file>
+        <file>icons/linuxshot-ui-svgs/line.svg</file>
+        <file>icons/linuxshot-ui-svgs/marker-light-down-3.svg</file>
+        <file>icons/linuxshot-ui-svgs/pen-clip-svgrepo-com.svg</file>
+        <file>icons/linuxshot-ui-svgs/rectangle-o.svg</file>
+        <file>icons/linuxshot-ui-svgs/save.svg</file>
+        <file>icons/linuxshot-ui-svgs/text-svgrepo-com.svg</file>
+        <file>icons/linuxshot-ui-svgs/undo-svgrepo-com.svg</file>
+        <file>icons/linuxshot-ui-svgs/upload-svgrepo-com.svg</file>
     </qresource>
 </RCC>
 
