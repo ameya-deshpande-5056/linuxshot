@@ -25,3 +25,4 @@ private slots:
 private:
     QColor m_color = Qt::red;
 };
+

@@ -55,3 +55,4 @@ std::unique_ptr<AnnotationCommand> LineTool::createCommand() {
 void LineTool::reset() {
     m_drawing = false;
 }
+

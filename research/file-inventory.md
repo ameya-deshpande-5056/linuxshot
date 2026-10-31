@@ -17,3 +17,4 @@ Inventory of all files extracted from `setup-lightshot.exe` (Lightshot v5.5.0.7)
 | `tmp/downloader.exe` | 187,712 | `8e553e9aa721db167bdeaf7748bb09d4f497e3a469fd09b6a995ea25d378f1fb` | PE32 Executable (x86) | Optional installer partner downloader | No |
 | `tmp/setupupdater.exe` | 886,032 | `088f048ee972ef80bd527e301431c1ad7e46d0c994ad8a2b586c4fa6d86ac399` | PE32 Executable (x86) | Self-updater installer payload | No |
 | `tmp/*.bmp`, `tmp/*.rtf` | Various | Various | Bitmaps and RTF | Promotional partner installation dialogs | No |
+

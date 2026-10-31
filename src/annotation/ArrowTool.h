@@ -36,3 +36,4 @@ private:
     QPointF m_current;
     bool m_drawing = false;
 };
+

@@ -31,3 +31,4 @@ Complete mapping of Lightshot settings keys to LinuxShot XDG configuration.
 | *(None)* | `upload/provider_url` | String | `""` | Custom upload endpoint URL |
 | *(None)* | `annotation/last_color` | String | `#FF0000` | Last selected annotation color (hex) |
 | *(None)* | `annotation/stroke_width` | Integer | `3` | Default annotation pen stroke width (px) |
+

@@ -56,3 +56,4 @@ std::unique_ptr<AnnotationCommand> RectTool::createCommand() {
 void RectTool::reset() {
     m_drawing = false;
 }
+

@@ -76,3 +76,4 @@ void TestImageExporter::testDefaultFilename() {
 
 QTEST_MAIN(TestImageExporter)
 #include "test_image_exporter.moc"
+

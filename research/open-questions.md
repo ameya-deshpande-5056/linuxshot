@@ -22,3 +22,4 @@
 - **Status**: Confirmed behavior.
 - **Finding**: On high-DPI screens, desktop coordinates may differ from physical pixel dimensions.
 - **Strategy**: Qt 6 has native High-DPI scaling (`devicePixelRatio()`). Coordinates during selection must map accurately to underlying screenshot pixel buffers so that exported images remain crisp and 1:1 with screen pixels.
+

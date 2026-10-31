@@ -33,3 +33,4 @@ private:
     QList<std::shared_ptr<AnnotationCommand>> m_undoStack;
     QList<std::shared_ptr<AnnotationCommand>> m_redoStack;
 };
+

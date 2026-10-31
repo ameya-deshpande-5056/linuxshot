@@ -210,3 +210,4 @@ bool GlobalShortcutManager::nativeEventFilter(const QByteArray &eventType, void 
 
     return false;
 }
+

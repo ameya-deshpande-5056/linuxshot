@@ -24,3 +24,4 @@ signals:
 private:
     std::unique_ptr<SelfHostedProvider> m_provider;
 };
+

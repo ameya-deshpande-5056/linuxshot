@@ -136,3 +136,4 @@ Right-click the tray icon and select **Preferences...**:
 
 - **Wayland Environment**: On pure Wayland sessions, global key grabbing is restricted by design. You can assign a custom global shortcut in your desktop environment's settings (e.g. GNOME Settings -> Keyboard -> Custom Shortcuts) bound to `linuxshot --capture`.
 - **System Tray Icon Missing**: On GNOME Shell, ensure an AppIndicator extension (such as `gnome-shell-extension-appindicator`) is enabled.
+

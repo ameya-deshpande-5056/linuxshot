@@ -73,3 +73,4 @@ private:
     QPushButton *m_undoBtn = nullptr;
     bool m_annotationMode = false;
 };
+

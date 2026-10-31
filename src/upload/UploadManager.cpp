@@ -24,3 +24,4 @@ void UploadManager::upload(const QImage &image, const UploadOptions &opts) {
         m_provider->upload(image, opts);
     }
 }
+

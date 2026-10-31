@@ -424,3 +424,4 @@ void SelectionOverlay::keyPressEvent(QKeyEvent *event) {
 
     QWidget::keyPressEvent(event);
 }
+

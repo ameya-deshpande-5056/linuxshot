@@ -131,18 +131,24 @@ public:
 src/
 ├── main.cpp
 ├── core/
-│   ├── Application.h/cpp         # App lifecycle, single instance
-│   ├── SettingsManager.h/cpp     # Configuration persistence
-│   └── GlobalShortcuts.h/cpp     # Hotkey registration
+│   └── Application.h/cpp         # App lifecycle, single instance
+├── settings/
+│   └── SettingsManager.h/cpp     # XDG-compliant configuration persistence
+├── platform/
+│   ├── Platform.h/cpp            # Platform/session/desktop environment abstraction
+│   └── GlobalShortcutManager.h/cpp # XCB global hotkey grabber & event filter
 ├── capture/
 │   ├── CaptureBackend.h          # Abstract capture interface
 │   ├── CaptureManager.h/cpp      # Backend selection & coordination
-│   ├── X11CaptureBackend.h/cpp   # XCB-based capture
-│   └── PortalCaptureBackend.h/cpp # XDG Portal capture
+│   ├── X11CaptureBackend.h/cpp   # XCB SHM capture
+│   └── PortalCaptureBackend.h/cpp # XDG Desktop Portal capture
 ├── ui/
 │   ├── SelectionOverlay.h/cpp    # Fullscreen selection window
 │   ├── AnnotationEditor.h/cpp    # Drawing canvas
-│   ├── Toolbar.h/cpp             # Tool and action toolbars
+│   ├── Toolbar.h/cpp             # Floating tool and action toolbars
+│   ├── ColorButton.h/cpp         # Color picker swatch button
+│   ├── TrayIcon.h/cpp            # System tray integration
+│   └── SettingsDialog.h/cpp      # Tabbed preferences dialog
 │   ├── TrayIcon.h/cpp            # System tray integration
 │   └── SettingsDialog.h/cpp      # Settings window
 ├── annotation/

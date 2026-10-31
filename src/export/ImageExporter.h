@@ -16,3 +16,4 @@ public:
     static QString defaultExtension(const QString &format);
     static QString generateDefaultFilename(const QString &format = "png");
 };
+

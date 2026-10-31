@@ -47,3 +47,4 @@ void ColorButton::paintEvent(QPaintEvent *event) {
     painter.setBrush(m_color);
     painter.drawEllipse(swatch);
 }
+

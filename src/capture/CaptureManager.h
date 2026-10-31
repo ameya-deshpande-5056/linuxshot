@@ -28,3 +28,4 @@ private:
     std::unique_ptr<CaptureBackend> m_backend;
     bool m_isWayland = false;
 };
+

@@ -51,3 +51,4 @@ QString ImageExporter::generateDefaultFilename(const QString &format) {
     QString timeStr = QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss");
     return QString("LinuxShot_%1.%2").arg(timeStr, defaultExtension(format));
 }
+

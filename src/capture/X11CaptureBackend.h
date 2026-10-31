@@ -31,3 +31,4 @@ private:
     size_t m_shmSize = 0;
     bool m_shmAvailable = false;
 };
+

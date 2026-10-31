@@ -8,7 +8,7 @@
 #include <QSlider>
 #include <QLineEdit>
 #include <QLabel>
-#include "core/SettingsManager.h"
+#include "settings/SettingsManager.h"
 
 class SettingsDialog : public QDialog {
     Q_OBJECT
@@ -58,3 +58,4 @@ private:
     QLineEdit *m_proxyHostEdit = nullptr;
     QLineEdit *m_proxyPortEdit = nullptr;
 };
+

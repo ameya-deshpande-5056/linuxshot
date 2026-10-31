@@ -1,6 +1,6 @@
 #include <QTest>
 #include <QTemporaryDir>
-#include "core/SettingsManager.h"
+#include "settings/SettingsManager.h"
 
 class TestSettings : public QObject {
     Q_OBJECT

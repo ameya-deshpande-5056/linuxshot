@@ -25,3 +25,4 @@ private:
     void createMenu();
     QMenu *m_menu = nullptr;
 };
+

@@ -39,3 +39,4 @@ private:
     QBoxLayout *m_layout = nullptr;
     QButtonGroup *m_group = nullptr;
 };
+

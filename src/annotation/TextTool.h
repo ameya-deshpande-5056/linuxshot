@@ -39,3 +39,4 @@ private:
     QString m_text;
     bool m_active = false;
 };
+

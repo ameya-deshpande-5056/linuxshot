@@ -56,3 +56,4 @@ std::unique_ptr<AnnotationCommand> CircleTool::createCommand() {
 void CircleTool::reset() {
     m_drawing = false;
 }
+

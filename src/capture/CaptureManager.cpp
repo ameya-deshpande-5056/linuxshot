@@ -1,14 +1,14 @@
 #include "CaptureManager.h"
 #include "X11CaptureBackend.h"
 #include "PortalCaptureBackend.h"
+#include "platform/Platform.h"
 #include <QGuiApplication>
 #include <QDebug>
 
 CaptureManager::CaptureManager(QObject *parent)
     : QObject(parent)
 {
-    const QString platform = QGuiApplication::platformName().toLower();
-    m_isWayland = platform.contains("wayland");
+    m_isWayland = Platform::isWayland();
 
     if (m_isWayland) {
         auto portal = std::make_unique<PortalCaptureBackend>(this);
@@ -74,3 +74,4 @@ QString CaptureManager::activeBackendName() const {
 bool CaptureManager::isWayland() const {
     return m_isWayland;
 }
+

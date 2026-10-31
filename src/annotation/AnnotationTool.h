@@ -48,3 +48,4 @@ protected:
     int m_width = 3;
     QFont m_font = QFont("Sans Serif", 14, QFont::Bold);
 };
+

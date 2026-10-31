@@ -26,3 +26,4 @@ private:
     QNetworkAccessManager m_netManager;
     QString m_endpoint;
 };
+

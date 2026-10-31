@@ -63,3 +63,4 @@ void CommandHistory::applyAllToImage(QImage &image) const {
         }
     }
 }
+

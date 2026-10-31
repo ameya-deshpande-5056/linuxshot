@@ -117,3 +117,4 @@ void SelfHostedProvider::onUploadFinished(QNetworkReply *reply) {
     reply->deleteLater();
     emit uploadCompleted(result);
 }
+

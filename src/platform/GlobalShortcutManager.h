@@ -43,3 +43,4 @@ private:
     QMap<QString, ShortcutData> m_shortcuts;
     QMap<QPair<xcb_keycode_t, uint16_t>, QString> m_lookup;
 };
+

@@ -88,3 +88,4 @@ Contains action buttons (left to right):
 - **Text**: Inline text entry. Click position places text origin. Text rendered with bold sans-serif font.
 - **Blur**: Rectangular mosaic pixelation. Divides selected area into blocks (e.g. 10x10 px) and fills each block with the average color.
 - **Undo**: Restores previous image state in reverse chronological order.
+

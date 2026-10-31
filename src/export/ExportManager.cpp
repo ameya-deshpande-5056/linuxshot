@@ -70,3 +70,4 @@ bool ExportManager::copyToClipboard(const QImage &image) {
     emit imageCopied();
     return true;
 }
+

@@ -259,3 +259,4 @@ void SettingsDialog::saveSettings() {
 
     m_settings->sync();
 }
+

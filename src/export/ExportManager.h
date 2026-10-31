@@ -20,3 +20,4 @@ signals:
     void imageCopied();
     void saveFailed(const QString &errorMessage);
 };
+

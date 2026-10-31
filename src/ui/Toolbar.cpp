@@ -148,3 +148,4 @@ void Toolbar::paintEvent(QPaintEvent *event) {
     p.setBrush(QColor(45, 45, 45, 240));
     p.drawRoundedRect(rect().adjusted(0, 0, -1, -1), 5, 5);
 }
+

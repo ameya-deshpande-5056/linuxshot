@@ -3,8 +3,9 @@
 #include <QObject>
 #include <memory>
 #include <QLockFile>
-#include "SettingsManager.h"
-#include "GlobalShortcutManager.h"
+#include "settings/SettingsManager.h"
+#include "platform/GlobalShortcutManager.h"
+#include "platform/Platform.h"
 #include "capture/CaptureManager.h"
 #include "export/ExportManager.h"
 #include "upload/UploadManager.h"
@@ -48,3 +49,4 @@ private:
 
     std::unique_ptr<QLockFile> m_lockFile;
 };
+

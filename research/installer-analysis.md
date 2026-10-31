@@ -45,3 +45,4 @@ From static string and WTL RTTI analysis:
 - **Registry Root**: `HKCU\Software\SkillBrains\Lightshot`
 - **Startup Integration**: Optional `Run` key entry in `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`
 - **Installation Directory**: `%ProgramFiles(x86)%\Skillbrains\Lightshot\`
+

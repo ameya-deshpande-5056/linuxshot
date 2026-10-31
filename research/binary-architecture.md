@@ -78,3 +78,4 @@
 | Settings Storage | Windows Registry (`HKCU\Software\...`) | `QSettings` (`~/.config/linuxshot/linuxshot.conf`) |
 | Clipboard | Win32 Clipboard | `QGuiApplication::clipboard()` |
 | Single Instance | Win32 Named Mutex | `QLockFile` in runtime directory |
+

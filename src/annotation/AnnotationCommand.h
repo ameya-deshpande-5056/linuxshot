@@ -23,3 +23,4 @@ public:
     virtual QString description() const = 0;
     virtual std::unique_ptr<AnnotationCommand> clone() const = 0;
 };
+

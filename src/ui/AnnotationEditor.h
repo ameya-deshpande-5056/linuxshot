@@ -53,3 +53,4 @@ private:
     QColor m_activeColor = Qt::red;
     int m_activeWidth = 3;
 };
+

@@ -167,3 +167,4 @@ QImage X11CaptureBackend::captureViaShm(const QRect &geometry) {
     QImage img(m_shmAddr, geometry.width(), geometry.height(), bytesPerLine, QImage::Format_RGB32);
     return img.copy();
 }
+

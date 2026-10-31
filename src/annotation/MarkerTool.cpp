@@ -74,3 +74,4 @@ void MarkerTool::reset() {
     m_currentPoints.clear();
     m_drawing = false;
 }
+

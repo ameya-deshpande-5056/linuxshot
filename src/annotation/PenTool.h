@@ -36,3 +36,4 @@ private:
     QPolygonF m_currentPoints;
     bool m_drawing = false;
 };
+

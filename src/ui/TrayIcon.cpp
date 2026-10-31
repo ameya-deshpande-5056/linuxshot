@@ -45,3 +45,4 @@ void TrayIcon::onActivated(QSystemTrayIcon::ActivationReason reason) {
         emit captureRequested();
     }
 }
+

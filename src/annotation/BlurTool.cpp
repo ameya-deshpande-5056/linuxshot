@@ -122,3 +122,4 @@ std::unique_ptr<AnnotationCommand> BlurTool::createCommand() {
 void BlurTool::reset() {
     m_drawing = false;
 }
+

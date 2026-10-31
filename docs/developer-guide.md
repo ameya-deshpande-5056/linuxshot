@@ -8,8 +8,11 @@ LinuxShot is built with modern C++20 and Qt 6.4+. It follows a modular design wi
 src/
 ├── main.cpp                  # Application entry point, CLI parser, single instance
 ├── core/
-│   ├── Application           # Main coordinator orchestrating modules
-│   ├── SettingsManager       # XDG-compliant persistent configuration (~/.config/linuxshot)
+│   └── Application           # Main coordinator orchestrating modules
+├── settings/
+│   └── SettingsManager       # XDG-compliant persistent configuration (~/.config/linuxshot)
+├── platform/
+│   ├── Platform              # Platform, session, and desktop environment detection
 │   └── GlobalShortcutManager # XCB global hotkey grabber & native event filter
 ├── capture/
 │   ├── CaptureBackend        # Abstract interface for screen capture
@@ -108,3 +111,4 @@ mksquashfs build/AppDir /tmp/linuxshot.squashfs -root-owned -noappend -comp gzip
 cat /tmp/appimage_runtime /tmp/linuxshot.squashfs > packaging/appimage/LinuxShot-0.1.0-x86_64.AppImage
 chmod +x packaging/appimage/LinuxShot-0.1.0-x86_64.AppImage
 ```
+

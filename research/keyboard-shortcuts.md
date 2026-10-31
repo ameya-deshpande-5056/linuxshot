@@ -29,3 +29,4 @@ Observed and mapped keyboard shortcuts:
 | Quick Tool Selection - Text | `T` | Selection active |
 | Quick Tool Selection - Marker | `M` | Selection active |
 | Quick Tool Selection - Blur | `B` | Selection active |
+

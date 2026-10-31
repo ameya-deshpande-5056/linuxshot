@@ -81,3 +81,4 @@ std::unique_ptr<AnnotationCommand> ArrowTool::createCommand() {
 void ArrowTool::reset() {
     m_drawing = false;
 }
+

@@ -16,3 +16,4 @@ public:
     virtual QImage captureFullDesktop() = 0;
     virtual QList<QRect> screenGeometries() = 0;
 };
+

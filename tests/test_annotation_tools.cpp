@@ -212,3 +212,4 @@ void TestAnnotationTools::testBlurTool() {
 
 QTEST_MAIN(TestAnnotationTools)
 #include "test_annotation_tools.moc"
+

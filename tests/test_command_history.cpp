@@ -91,3 +91,4 @@ void TestCommandHistory::testRedoInvalidationOnNewCommand() {
 
 QTEST_MAIN(TestCommandHistory)
 #include "test_command_history.moc"
+

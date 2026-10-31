@@ -38,8 +38,15 @@ pkg_check_modules(XCB REQUIRED xcb xcb-shm xcb-keysyms)
 # Source files
 set(CORE_SOURCES
     src/core/Application.cpp
-    src/core/SettingsManager.cpp
-    src/core/GlobalShortcutManager.cpp
+)
+
+set(SETTINGS_SOURCES
+    src/settings/SettingsManager.cpp
+)
+
+set(PLATFORM_SOURCES
+    src/platform/GlobalShortcutManager.cpp
+    src/platform/Platform.cpp
 )
 
 set(CAPTURE_SOURCES
@@ -89,6 +96,8 @@ set(RESOURCES
 add_executable(linuxshot
     src/main.cpp
     ${CORE_SOURCES}
+    ${SETTINGS_SOURCES}
+    ${PLATFORM_SOURCES}
     ${CAPTURE_SOURCES}
     ${UI_SOURCES}
     ${ANNOTATION_SOURCES}
@@ -133,7 +142,7 @@ if(BUILD_TESTS)
 
     add_executable(test_settings
         tests/test_settings.cpp
-        src/core/SettingsManager.cpp
+        src/settings/SettingsManager.cpp
     )
     target_include_directories(test_settings PRIVATE ${CMAKE_SOURCE_DIR}/src)
     target_link_libraries(test_settings PRIVATE Qt6::Core Qt6::Gui Qt6::Test Qt6::Widgets)
@@ -154,5 +163,13 @@ if(BUILD_TESTS)
     target_include_directories(test_annotation_tools PRIVATE ${CMAKE_SOURCE_DIR}/src)
     target_link_libraries(test_annotation_tools PRIVATE Qt6::Core Qt6::Gui Qt6::Test Qt6::Widgets)
     add_test(NAME AnnotationTools COMMAND test_annotation_tools)
+
+    add_executable(test_platform
+        tests/test_platform.cpp
+        src/platform/Platform.cpp
+    )
+    target_include_directories(test_platform PRIVATE ${CMAKE_SOURCE_DIR}/src)
+    target_link_libraries(test_platform PRIVATE Qt6::Core Qt6::Gui Qt6::DBus Qt6::Test)
+    add_test(NAME Platform COMMAND test_platform)
 endif()
 

@@ -62,3 +62,4 @@ Compact floating toolbar alongside selection bottom:
 - **Upload / Network Tab**:
   - Proxy configuration: No proxy, System proxy, Manual proxy.
   - Upload provider / endpoint URL.
+
