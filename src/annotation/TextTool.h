@@ -10,6 +10,11 @@ public:
     QString description() const override { return "Text"; }
     std::unique_ptr<AnnotationCommand> clone() const override;
 
+    QString text() const { return m_text; }
+    QPointF pos() const { return m_pos; }
+    QFont font() const { return m_font; }
+    QColor color() const { return m_color; }
+
 private:
     QString m_text;
     QPointF m_pos;

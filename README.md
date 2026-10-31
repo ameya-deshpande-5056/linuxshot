@@ -57,11 +57,25 @@ Comprehensive vector drawing suite featuring directional arrows, rectangles, cir
   <img src="docs/screenshots/02-annotations-showcase.png" alt="LinuxShot Vector Annotations" width="850" />
 </p>
 
-### 3. Preferences & Configuration
+### 3. Floating Tool & Action Palettes
+Dual floating palettes docking to selection boundaries: vertical annotation palette (tools, color swatch, undo) and horizontal action palette (Upload, Copy, Save, Cancel).
+
+<p align="center">
+  <img src="docs/screenshots/03-toolbars-palette.png" alt="LinuxShot Floating Toolbars" width="220" />
+</p>
+
+### 4. Preferences & Settings
 Tabbed configuration dialog with persistent XDG storage (`~/.config/linuxshot/linuxshot.conf`) managing desktop notifications, global shortcuts, format encoders (PNG/JPEG/BMP) with quality tuning, and upload providers.
 
 <p align="center">
-  <img src="docs/screenshots/04-preferences.png" alt="LinuxShot Preferences Dialog" width="600" />
+  <img src="docs/screenshots/04-preferences.png" alt="LinuxShot Preferences Dialog" width="560" />
+</p>
+
+### 5. About LinuxShot Dialog
+Native dark-themed metadata dialog displaying the application logo, version, clickable Git commit hash, build timestamp, and Qt runtime environment.
+
+<p align="center">
+  <img src="docs/screenshots/05-about-dialog.png" alt="About LinuxShot Dialog" width="560" />
 </p>
 
 ---
@@ -79,7 +93,7 @@ Tabbed configuration dialog with persistent XDG storage (`~/.config/linuxshot/li
   - **Rectangle**: Hollow bounding box outline.
   - **Circle / Ellipse**: Smooth rounded outline.
   - **Marker / Highlighter**: Semi-transparent highlighter with alpha blending.
-  - **Text**: On-screen typography with custom fonts, colors, and sizing.
+  - **Text**: Interactive inline draggable text box with on-canvas editing, dynamic multi-line height expansion, and click-outside commitment.
   - **Blur / Pixelate**: Privacy blur and pixelation brush.
 - ↺ **Command History**: Full Undo (`Ctrl+Z`) and Redo (`Ctrl+Y`) vector action stack.
 - ⚡ **Dual Capture Engine**:
@@ -91,6 +105,7 @@ Tabbed configuration dialog with persistent XDG storage (`~/.config/linuxshot/li
   - Pluggable asynchronous upload engine with self-hosted server support.
 - 🖥️ **Desktop Integration**:
   - System tray icon with quick actions and persistent preferences dialog.
+  - Modern dark-themed "About LinuxShot" dialog displaying version, Git commit hash, build timestamp, and Qt runtime metadata.
   - Global hotkeys (`Print Screen`, `Shift+Print Screen`).
   - Self-contained SVG UI icons with dynamic dark-mode tinting.
   - Multi-monitor awareness and native High-DPI scaling.
@@ -119,7 +134,7 @@ Tabbed configuration dialog with persistent XDG storage (`~/.config/linuxshot/li
 Download the latest `.deb` package from the [Releases](https://github.com/ameya-deshpande-5056/linuxshot/releases) page and install:
 
 ```bash
-sudo dpkg -i linuxshot_0.1.0_amd64.deb
+sudo dpkg -i linuxshot_0.1.1_amd64.deb
 sudo apt-get install -f # resolve any runtime dependencies if prompted
 ```
 
@@ -128,8 +143,8 @@ sudo apt-get install -f # resolve any runtime dependencies if prompted
 Download the executable `.AppImage` from [Releases](https://github.com/ameya-deshpande-5056/linuxshot/releases), make it executable, and run:
 
 ```bash
-chmod +x LinuxShot-0.1.0-x86_64.AppImage
-./LinuxShot-0.1.0-x86_64.AppImage
+chmod +x LinuxShot-0.1.1-x86_64.AppImage
+./LinuxShot-0.1.1-x86_64.AppImage
 ```
 
 ---
@@ -194,10 +209,10 @@ sudo cmake --build build --target uninstall
 
 ```bash
 # Build Debian package (.deb)
-./packaging/build-deb.sh 0.1.0
+./packaging/build-deb.sh 0.1.1
 
 # Build AppImage (.AppImage)
-./packaging/build-appimage.sh 0.1.0
+./packaging/build-appimage.sh 0.1.1
 ```
 
 ---
@@ -220,7 +235,8 @@ linuxshot
 | **Copy to Clipboard** | `Ctrl + C` | Copies current cropped screenshot to clipboard |
 | **Undo Annotation** | `Ctrl + Z` | Reverts the last vector drawing action |
 | **Redo Annotation** | `Ctrl + Y` | Re-applies the previously reverted action |
-| **Cancel Capture** | `Escape` | Dismisses selection overlay without saving |
+| **Commit Text Box** | `Ctrl + Enter` / Click outside | Bakes active inline text box into the vector annotations |
+| **Cancel Capture** | `Escape` | Dismisses active text box or closes selection overlay |
 
 ---
 

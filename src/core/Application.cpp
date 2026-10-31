@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "export/ImageExporter.h"
+#include "ui/AboutDialog.h"
 #include <QGuiApplication>
 #include <QMessageBox>
 #include <QStandardPaths>
@@ -246,12 +247,6 @@ void Application::showPreferences() {
 }
 
 void Application::showAbout() {
-    QMessageBox::about(
-        nullptr,
-        "About LinuxShot",
-        "<h3>LinuxShot v0.1.0</h3>"
-        "<p>A high-performance, Linux-native screenshot and annotation tool.</p>"
-        "<p>Clean-room implementation inspired by modern screenshot workflows.</p>"
-        "<p>Licensed under GNU General Public License v3.0.</p>"
-    );
+    AboutDialog dlg;
+    dlg.exec();
 }

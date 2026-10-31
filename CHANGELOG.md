@@ -5,6 +5,20 @@ All notable changes to LinuxShot will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.1] - 2026-10-31
+
+### Added
+- Interactive inline text annotation box (`FloatingTextEditor`) supporting on-canvas typing, live preview, and dynamic multi-line height expansion.
+- Draggable text box positioning: drag by the dashed cyan border or top header (`Qt::SizeAllCursor`) anywhere across the screenshot canvas before committing.
+- Multi-line typography rendering with automatic line spacing and high-contrast outline in `TextCommand::paint`.
+- Fail-safe text commitment: active inline text automatically commits upon clicking outside the box, pressing `Ctrl+Enter`, switching tools, or executing save, copy, or upload actions.
+- Dedicated dark-themed `AboutDialog` displaying a 112×112 application icon, version, Git commit hash, ISO-8601 UTC build timestamp, Qt runtime version, and clickable GitHub project URL.
+- Comprehensive unit test `testMultiLineTextTool` in `tests/test_annotation_tools.cpp`.
+
+### Changed
+- Replaced modal `QInputDialog` text entry with seamless non-blocking inline text editing directly on the annotation canvas.
+- Replaced standard `QMessageBox::about` with custom-styled `AboutDialog`.
+
 ## [0.1.0] - 2026-10-31
 
 ### Added

@@ -7,6 +7,8 @@
 #include "annotation/AnnotationTool.h"
 #include "annotation/CommandHistory.h"
 
+class FloatingTextEditor;
+
 class AnnotationEditor : public QWidget {
     Q_OBJECT
 
@@ -36,6 +38,9 @@ public:
     bool canUndo() const;
     bool canRedo() const;
 
+    void commitFloatingText();
+    FloatingTextEditor* floatingTextEditor() const { return m_floatingTextEditor; }
+
 signals:
     void historyChanged();
     void imageModified();
@@ -55,5 +60,10 @@ private:
     ToolType m_activeToolType = ToolType::Pen;
     QColor m_activeColor = Qt::red;
     int m_activeWidth = 3;
+
+    FloatingTextEditor *m_floatingTextEditor = nullptr;
+    bool m_isDrawingTextRect = false;
+    QPoint m_textDragStart;
+    QRect m_textPreviewRect;
 };
 

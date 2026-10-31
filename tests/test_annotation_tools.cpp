@@ -20,6 +20,7 @@ private slots:
     void testCircleTool();
     void testMarkerTool();
     void testTextTool();
+    void testMultiLineTextTool();
     void testBlurTool();
 };
 
@@ -183,6 +184,43 @@ void TestAnnotationTools::testTextTool() {
         if (foundNonWhite) break;
     }
     QVERIFY(foundNonWhite);
+}
+
+void TestAnnotationTools::testMultiLineTextTool() {
+    TextCommand cmd("Line 1\nLine 2", QPointF(20, 30), QFont("Sans Serif", 12), Qt::red);
+    QCOMPARE(cmd.text(), "Line 1\nLine 2");
+    QCOMPARE(cmd.pos(), QPointF(20, 30));
+
+    QImage img(200, 120, QImage::Format_ARGB32_Premultiplied);
+    img.fill(Qt::white);
+    QPainter p(&img);
+    cmd.paint(p);
+    p.end();
+
+    // Line 1 should be around y=30, line 2 should be around y=30 + lineSpacing
+    bool foundLine1 = false;
+    for (int y = 15; y < 40; ++y) {
+        for (int x = 20; x < 100; ++x) {
+            if (img.pixelColor(x, y) != Qt::white) {
+                foundLine1 = true;
+                break;
+            }
+        }
+        if (foundLine1) break;
+    }
+    QVERIFY(foundLine1);
+
+    bool foundLine2 = false;
+    for (int y = 40; y < 70; ++y) {
+        for (int x = 20; x < 100; ++x) {
+            if (img.pixelColor(x, y) != Qt::white) {
+                foundLine2 = true;
+                break;
+            }
+        }
+        if (foundLine2) break;
+    }
+    QVERIFY(foundLine2);
 }
 
 void TestAnnotationTools::testBlurTool() {

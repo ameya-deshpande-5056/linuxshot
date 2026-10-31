@@ -11,6 +11,7 @@
 #include "ui/SelectionOverlay.h"
 #include "ui/AnnotationEditor.h"
 #include "ui/SettingsDialog.h"
+#include "ui/AboutDialog.h"
 #include "settings/SettingsManager.h"
 #include "annotation/RectTool.h"
 #include "annotation/ArrowTool.h"
@@ -169,6 +170,10 @@ static QImage createMockDesktop(int w, int h) {
 
 int main(int argc, char *argv[]) {
     QApplication app(argc, argv);
+    app.setApplicationName("LinuxShot");
+    app.setApplicationDisplayName("LinuxShot");
+    app.setApplicationVersion(LINUXSHOT_VERSION);
+    app.setWindowIcon(QIcon(":/icons/linuxshot.png"));
 
     QDir().mkpath("docs/screenshots");
 
@@ -327,6 +332,21 @@ int main(int argc, char *argv[]) {
         QPixmap dialogPix = dialog.grab();
         dialogPix.toImage().save("docs/screenshots/04-preferences.png", "PNG");
         std::cout << "Saved: docs/screenshots/04-preferences.png ("
+                  << dialogPix.width() << "x" << dialogPix.height() << ")" << std::endl;
+        dialog.hide();
+    }
+
+    // =========================================================================
+    // 5. SCENARIO 5: About LinuxShot Dialog
+    // =========================================================================
+    {
+        AboutDialog dialog;
+        dialog.show();
+        QApplication::processEvents();
+
+        QPixmap dialogPix = dialog.grab();
+        dialogPix.toImage().save("docs/screenshots/05-about-dialog.png", "PNG");
+        std::cout << "Saved: docs/screenshots/05-about-dialog.png ("
                   << dialogPix.width() << "x" << dialogPix.height() << ")" << std::endl;
         dialog.hide();
     }

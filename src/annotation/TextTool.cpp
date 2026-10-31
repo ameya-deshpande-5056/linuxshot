@@ -15,13 +15,20 @@ void TextCommand::paint(QPainter &painter) const {
     painter.setFont(m_font);
     painter.setPen(m_color);
 
-    // Draw text with a subtle dark outline for readability on all backgrounds
-    QPainterPath path;
-    path.addText(m_pos, m_font, m_text);
+    QFontMetrics fm(m_font);
+    int lineSpacing = fm.lineSpacing();
+    QStringList lines = m_text.split('\n');
 
     QPen outlinePen(QColor(0, 0, 0, 160), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
-    painter.strokePath(path, outlinePen);
-    painter.fillPath(path, m_color);
+
+    for (int i = 0; i < lines.size(); ++i) {
+        if (lines[i].isEmpty()) continue;
+        QPointF linePos = m_pos + QPointF(0, i * lineSpacing);
+        QPainterPath path;
+        path.addText(linePos, m_font, lines[i]);
+        painter.strokePath(path, outlinePen);
+        painter.fillPath(path, m_color);
+    }
 
     painter.restore();
 }

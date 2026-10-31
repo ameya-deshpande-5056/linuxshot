@@ -1,8 +1,29 @@
 cmake_minimum_required(VERSION 3.22)
 project(LinuxShot
-    VERSION 0.1.0
+    VERSION 0.1.1
     HOMEPAGE_URL "https://github.com/ameya-deshpande-5056/linuxshot"
     LANGUAGES CXX
+)
+
+string(TIMESTAMP LINUXSHOT_BUILD_TIMESTAMP "%Y-%m-%dT%H:%M:%SZ" UTC)
+set(LINUXSHOT_PROJECT_URL "${PROJECT_HOMEPAGE_URL}")
+
+execute_process(
+    COMMAND git rev-parse --short HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE LINUXSHOT_COMMIT_HASH
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+    ERROR_QUIET
+)
+if(NOT LINUXSHOT_COMMIT_HASH)
+    set(LINUXSHOT_COMMIT_HASH "unknown")
+endif()
+
+add_compile_definitions(
+    LINUXSHOT_VERSION="${PROJECT_VERSION}"
+    LINUXSHOT_BUILD_TIMESTAMP="${LINUXSHOT_BUILD_TIMESTAMP}"
+    LINUXSHOT_PROJECT_URL="${LINUXSHOT_PROJECT_URL}"
+    LINUXSHOT_COMMIT_HASH="${LINUXSHOT_COMMIT_HASH}"
 )
 
 set(CMAKE_CXX_STANDARD 20)
@@ -62,9 +83,11 @@ set(CAPTURE_SOURCES
 set(UI_SOURCES
     src/ui/SelectionOverlay.cpp
     src/ui/AnnotationEditor.cpp
+    src/ui/FloatingTextEditor.cpp
     src/ui/Toolbar.cpp
     src/ui/TrayIcon.cpp
     src/ui/SettingsDialog.cpp
+    src/ui/AboutDialog.cpp
     src/ui/ColorButton.cpp
     src/ui/IconHelper.cpp
 )

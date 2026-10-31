@@ -1,6 +1,6 @@
 # LinuxShot Project Status
 
-**Current Status**: Complete & Verified (v0.1.0)
+**Current Status**: Complete & Verified (v0.1.1)
 **Date**: 2026-10-31
 
 ---
@@ -70,7 +70,7 @@ All features implemented clean-room in modern C++20 with Qt 6:
   - Rectangle tool.
   - Circle/Ellipse tool.
   - Highlighter marker tool (semi-transparent 90-alpha multiply blend).
-  - Text tool (bold typography with subtle outline for high contrast).
+  - Text tool (interactive inline text box with drag-to-move, multi-line typography, and click-outside commitment).
   - Blur / Pixelate tool (direct pixel block mosaic averaging).
   - Color picker swatch.
 - [x] **Export & Output**:
@@ -89,6 +89,7 @@ All features implemented clean-room in modern C++20 with Qt 6:
 - [x] **System Tray Integration**:
   - Single-instance enforcement via `QLockFile`.
   - System tray icon with context menu.
+  - Native styled "About LinuxShot" dialog with runtime and build metadata.
   - Global shortcut listener via `xcb_grab_key`.
 
 ---

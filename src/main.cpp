@@ -8,7 +8,11 @@ int main(int argc, char *argv[]) {
     app.setApplicationName("LinuxShot");
     app.setApplicationDisplayName("LinuxShot");
     app.setOrganizationName("LinuxShot");
-    app.setApplicationVersion("0.1.0");
+#ifdef LINUXSHOT_VERSION
+    app.setApplicationVersion(LINUXSHOT_VERSION);
+#else
+    app.setApplicationVersion("0.1.1");
+#endif
     app.setWindowIcon(QIcon(":/icons/linuxshot.png"));
     app.setQuitOnLastWindowClosed(false);
 

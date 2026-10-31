@@ -1,4 +1,5 @@
 #include "AnnotationEditor.h"
+#include "FloatingTextEditor.h"
 #include <QMouseEvent>
 #include "annotation/PenTool.h"
 #include "annotation/LineTool.h"
@@ -9,7 +10,6 @@
 #include "annotation/TextTool.h"
 #include "annotation/BlurTool.h"
 #include <QPainter>
-#include <QInputDialog>
 
 AnnotationEditor::AnnotationEditor(QWidget *parent)
     : QWidget(parent)
@@ -17,6 +17,17 @@ AnnotationEditor::AnnotationEditor(QWidget *parent)
     setAttribute(Qt::WA_OpaquePaintEvent, false);
     setMouseTracking(true);
     initTools();
+
+    m_floatingTextEditor = new FloatingTextEditor(this);
+    connect(m_floatingTextEditor, &FloatingTextEditor::committed, this,
+            [this](const QString &text, const QPointF &pos, const QFont &font, const QColor &color) {
+        if (!text.trimmed().isEmpty()) {
+            auto cmd = std::make_unique<TextCommand>(text, pos, font, color);
+            m_history.addCommand(std::move(cmd));
+            emit imageModified();
+            update();
+        }
+    });
 
     connect(&m_history, &CommandHistory::historyChanged, this, [this]() {
         update();
@@ -38,7 +49,14 @@ void AnnotationEditor::initTools() {
     setStrokeWidth(m_activeWidth);
 }
 
+void AnnotationEditor::commitFloatingText() {
+    if (m_floatingTextEditor && m_floatingTextEditor->isVisible()) {
+        m_floatingTextEditor->commit();
+    }
+}
+
 void AnnotationEditor::setBaseImage(const QImage &image) {
+    commitFloatingText();
     m_baseImage = image;
     m_history.clear();
     setFixedSize(image.size());
@@ -46,6 +64,7 @@ void AnnotationEditor::setBaseImage(const QImage &image) {
 }
 
 void AnnotationEditor::updateCrop(const QRect &geometry, const QImage &image) {
+    commitFloatingText();
     m_baseImage = image;
     setGeometry(geometry);
     setFixedSize(image.size());
@@ -53,6 +72,7 @@ void AnnotationEditor::updateCrop(const QRect &geometry, const QImage &image) {
 }
 
 QImage AnnotationEditor::getRenderedImage() const {
+    const_cast<AnnotationEditor*>(this)->commitFloatingText();
     if (m_baseImage.isNull()) return QImage();
 
     QImage result = m_baseImage.copy();
@@ -81,6 +101,7 @@ QImage AnnotationEditor::getRenderedImage() const {
 
 void AnnotationEditor::setActiveTool(ToolType type) {
     if (m_activeToolType != type) {
+        commitFloatingText();
         if (m_tools.contains(m_activeToolType)) {
             m_tools[m_activeToolType]->reset();
         }
@@ -98,6 +119,9 @@ void AnnotationEditor::setColor(const QColor &color) {
     for (auto &tool : m_tools) {
         tool->setColor(color);
     }
+    if (m_floatingTextEditor) {
+        m_floatingTextEditor->setTextColor(color);
+    }
     update();
 }
 
@@ -112,6 +136,10 @@ void AnnotationEditor::setStrokeWidth(int width) {
             tool->setWidth(m_activeWidth);
         }
     }
+    if (m_floatingTextEditor) {
+        int fontSize = qBound(12, 10 + m_activeWidth * 2, 48);
+        m_floatingTextEditor->setTextFont(QFont("Sans Serif", fontSize, QFont::Bold));
+    }
     update();
 }
 
@@ -120,14 +148,17 @@ int AnnotationEditor::strokeWidth() const {
 }
 
 void AnnotationEditor::undo() {
+    commitFloatingText();
     m_history.undo();
 }
 
 void AnnotationEditor::redo() {
+    commitFloatingText();
     m_history.redo();
 }
 
 void AnnotationEditor::clear() {
+    commitFloatingText();
     m_history.clear();
 }
 
@@ -162,30 +193,38 @@ void AnnotationEditor::paintEvent(QPaintEvent *event) {
     m_history.renderAll(p);
 
     // Draw in-progress preview of active tool
-    if (m_tools.contains(m_activeToolType)) {
+    if (m_tools.contains(m_activeToolType) && m_activeToolType != ToolType::Text) {
         m_tools[m_activeToolType]->paintPreview(p);
+    }
+
+    // Draw text box rubberband preview while dragging to draw text box
+    if (m_isDrawingTextRect && !m_textPreviewRect.isEmpty()) {
+        p.save();
+        p.setPen(QPen(QColor(0, 132, 255), 1, Qt::DashLine));
+        p.setBrush(QColor(0, 132, 255, 30));
+        p.drawRect(m_textPreviewRect);
+        p.restore();
     }
 }
 
 void AnnotationEditor::mousePressEvent(QMouseEvent *event) {
     if (event->button() != Qt::LeftButton) return;
 
-    if (m_activeToolType == ToolType::Text) {
-        bool ok = false;
-        QString text = QInputDialog::getText(
-            this, "Add Text", "Enter text annotation:",
-            QLineEdit::Normal, "", &ok
-        );
-        if (ok && !text.trimmed().isEmpty()) {
-            auto *textTool = static_cast<TextTool *>(m_tools[ToolType::Text].get());
-            textTool->mousePress(event->position());
-            textTool->setText(text);
-            auto cmd = textTool->createCommand();
-            if (cmd) {
-                m_history.addCommand(std::move(cmd));
-                emit imageModified();
-            }
+    // If floating text editor is currently active:
+    if (m_floatingTextEditor && m_floatingTextEditor->isVisible()) {
+        QPoint pos = event->pos();
+        if (!m_floatingTextEditor->geometry().contains(pos)) {
+            // Click outside commits the textbox and makes it permanent!
+            commitFloatingText();
+            // Consumed: Do not spawn a new textbox on the same click that committed the previous one
+            return;
         }
+    }
+
+    if (m_activeToolType == ToolType::Text) {
+        m_isDrawingTextRect = true;
+        m_textDragStart = event->pos();
+        m_textPreviewRect = QRect(m_textDragStart, m_textDragStart);
         return;
     }
 
@@ -196,6 +235,12 @@ void AnnotationEditor::mousePressEvent(QMouseEvent *event) {
 }
 
 void AnnotationEditor::mouseMoveEvent(QMouseEvent *event) {
+    if (m_isDrawingTextRect) {
+        m_textPreviewRect = QRect(m_textDragStart, event->pos()).normalized();
+        update();
+        return;
+    }
+
     if (m_tools.contains(m_activeToolType) && m_tools[m_activeToolType]->isDrawing()) {
         m_tools[m_activeToolType]->mouseMove(event->position());
         update();
@@ -204,6 +249,32 @@ void AnnotationEditor::mouseMoveEvent(QMouseEvent *event) {
 
 void AnnotationEditor::mouseReleaseEvent(QMouseEvent *event) {
     if (event->button() != Qt::LeftButton) return;
+
+    if (m_isDrawingTextRect) {
+        m_isDrawingTextRect = false;
+        QRect boxRect = QRect(m_textDragStart, event->pos()).normalized();
+
+        // If user just clicked or made a very small drag, provide a comfortable default size
+        if (boxRect.width() < 60 || boxRect.height() < 30) {
+            int defaultW = 180;
+            int defaultH = 56;
+            boxRect = QRect(m_textDragStart, QSize(defaultW, defaultH));
+        }
+
+        // Clamp inside editor geometry
+        if (boxRect.right() >= width()) boxRect.moveRight(width() - 2);
+        if (boxRect.bottom() >= height()) boxRect.moveBottom(height() - 2);
+        if (boxRect.left() < 0) boxRect.moveLeft(2);
+        if (boxRect.top() < 0) boxRect.moveTop(2);
+
+        m_textPreviewRect = QRect();
+
+        int fontSize = qBound(12, 10 + m_activeWidth * 2, 48);
+        QFont f("Sans Serif", fontSize, QFont::Bold);
+        m_floatingTextEditor->startEditing(boxRect, f, m_activeColor);
+        update();
+        return;
+    }
 
     if (m_tools.contains(m_activeToolType) && m_tools[m_activeToolType]->isDrawing()) {
         m_tools[m_activeToolType]->mouseRelease(event->position());
