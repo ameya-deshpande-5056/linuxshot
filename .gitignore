@@ -1,0 +1,10 @@
+build/
+*.o
+*.a
+*.so
+*.AppImage
+*.deb
+setup-lightshot.exe
+.cache/
+linuxshot.lock
+research/extracted/

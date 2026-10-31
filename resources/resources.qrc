@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/linuxshot.png</file>
+    </qresource>
+</RCC>
+

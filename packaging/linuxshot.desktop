@@ -1,0 +1,13 @@
+[Desktop Entry]
+Name=LinuxShot
+Comment=Screenshot capture and annotation tool
+GenericName=Screenshot Tool
+Exec=linuxshot
+Icon=linuxshot
+Terminal=false
+Type=Application
+Categories=Utility;Graphics;
+Keywords=screenshot;capture;annotation;screen;
+StartupNotify=false
+X-GNOME-Autostart-enabled=false
+
