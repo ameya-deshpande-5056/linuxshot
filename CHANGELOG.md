@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Real-time toolbar tracking during selection resize and move operations.
 - Non-destructive crop updating preserving user annotations across selection resize events.
 - Reorganized codebase into dedicated `src/platform/` and `src/settings/` directories.
-- Extracted and integrated authentic Lightshot application icons (Save, Copy, Upload, Cancel, Pen, Line, Arrow, Rectangle, Marker, Text, Undo) compiled into Qt resource system (`resources.qrc`).
+- Switched UI toolbar icons to custom SVGs in `resources/icons/linuxshot-ui-svgs` compiled into Qt's resource system (`resources.qrc`), with dynamic dark-mode tinting.
+- Removed legacy extracted `resources/icons/lightshot` directory.
 - Fixed "Save As" modal dialog accessibility lockup by ensuring the fullscreen overlay unmaps and dismisses before spawning file chooser.
 
