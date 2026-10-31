@@ -1,0 +1,50 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: Build & Test (Ubuntu 24.04)
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            build-essential \
+            cmake \
+            qt6-base-dev \
+            libqt6svg6 \
+            libxcb1-dev \
+            libxcb-shm0-dev \
+            libxcb-keysyms1-dev \
+            libx11-dev \
+            squashfs-tools
+
+      - name: Configure CMake
+        run: |
+          cmake -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DBUILD_TESTS=ON
+
+      - name: Compile LinuxShot
+        run: cmake --build build -j$(nproc)
+
+      - name: Run Test Suite
+        run: ctest --test-dir build --output-on-failure
+
+      - name: Verify Packaging Scripts
+        run: |
+          ./packaging/build-deb.sh 0.1.0-ci
+          ./packaging/build-appimage.sh 0.1.0-ci
+          test -f packaging/deb/linuxshot_0.1.0-ci_amd64.deb
+          test -f packaging/appimage/LinuxShot-0.1.0-ci-x86_64.AppImage
