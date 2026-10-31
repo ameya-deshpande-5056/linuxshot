@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.1.0] - 2026-10-31
 
 ### Added
-- Clean-room C++20 and Qt 6 implementation of LinuxShot.
+- Clean-room C++20 and Qt 6 implementation of LightShot.
 - X11 zero-copy XCB-SHM capture engine and D-Bus XDG Desktop Portal fallback.
 - Interactive multi-monitor selection overlay with 8 resize handles and dimension badge.
 - Vector annotation engine: Pen, Line, Arrow, Rectangle, Circle, Marker (highlighter), Text, and Blur / Pixelate.
