@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Non-destructive crop updating preserving user annotations across selection resize events.
 - Reorganized codebase into dedicated `src/platform/` and `src/settings/` directories.
 - Switched UI toolbar icons to custom SVGs in `resources/icons/linuxshot-ui-svgs` compiled into Qt's resource system (`resources.qrc`), with dynamic dark-mode tinting.
+- Fixed blur/pixelate toolbar icon dark-mode tinting to match other vector tool icons.
 - Removed legacy extracted `resources/icons/lightshot` directory.
 - Fixed "Save As" modal dialog accessibility lockup by ensuring the fullscreen overlay unmaps and dismisses before spawning file chooser.
 
