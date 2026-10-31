@@ -40,6 +40,7 @@ bool Application::init() {
     m_overlay = std::make_unique<SelectionOverlay>();
 
     m_upload->setEndpoint(m_settings->uploadEndpoint());
+    m_upload->setPrntscrEnabled(m_settings->uploadPrntscrEnabled());
 
     // Connect tray
     connect(m_tray.get(), &TrayIcon::captureRequested, this, &Application::triggerCapture);
@@ -84,6 +85,7 @@ bool Application::init() {
     connect(m_settings.get(), &SettingsManager::settingsChanged, this, &Application::reloadHotkeys);
     connect(m_settings.get(), &SettingsManager::settingsChanged, this, [this]() {
         m_upload->setEndpoint(m_settings->uploadEndpoint());
+    m_upload->setPrntscrEnabled(m_settings->uploadPrntscrEnabled());
     });
 
     reloadHotkeys();

@@ -4,7 +4,7 @@
 
 class TextCommand : public AnnotationCommand {
 public:
-    TextCommand(const QString &text, const QPointF &pos, const QFont &font, const QColor &color);
+    TextCommand(const QString &text, const QPointF &pos, const QFont &font, const QColor &color, int boxWidth = 0);
 
     void paint(QPainter &painter) const override;
     QString description() const override { return "Text"; }
@@ -14,12 +14,16 @@ public:
     QPointF pos() const { return m_pos; }
     QFont font() const { return m_font; }
     QColor color() const { return m_color; }
+    int boxWidth() const { return m_boxWidth; }
+
+    static QString wrapText(const QString &text, const QFont &font, qreal wrapWidth);
 
 private:
     QString m_text;
     QPointF m_pos;
     QFont m_font;
     QColor m_color;
+    int m_boxWidth = 0;
 };
 
 class TextTool : public AnnotationTool {

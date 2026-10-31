@@ -158,6 +158,25 @@ QWidget* SettingsDialog::createUploadTab() {
 
     layout->addLayout(form);
 
+    auto *prntscrGrp = new QGroupBox("Lightshot / Prntscr Upload (Public)", widget);
+    auto *prntscrLayout = new QVBoxLayout(prntscrGrp);
+
+    m_prntscrCheck = new QCheckBox("Enable uploading to prnt.sc (upload.prntscr.com)", prntscrGrp);
+    prntscrLayout->addWidget(m_prntscrCheck);
+
+    m_prntscrWarning = new QLabel(
+        "⚠️ Warning: Screenshots uploaded to prnt.sc are publicly accessible on the internet without authentication. "
+        "Anyone can view them. Use at your own risk.", prntscrGrp);
+    m_prntscrWarning->setStyleSheet("color: #E67E22; font-size: 11px;");
+    m_prntscrWarning->setWordWrap(true);
+    prntscrLayout->addWidget(m_prntscrWarning);
+
+    connect(m_prntscrCheck, &QCheckBox::toggled, this, [this](bool checked) {
+        m_uploadEndpointEdit->setEnabled(!checked);
+    });
+
+    layout->addWidget(prntscrGrp);
+
     auto *proxyGrp = new QGroupBox("Proxy Settings", widget);
     auto *pForm = new QFormLayout(proxyGrp);
     m_proxyCombo = new QComboBox(proxyGrp);
@@ -215,6 +234,8 @@ void SettingsDialog::loadSettings() {
 
     // Upload & Network
     m_uploadEndpointEdit->setText(m_settings->uploadEndpoint());
+    m_prntscrCheck->setChecked(m_settings->uploadPrntscrEnabled());
+    m_uploadEndpointEdit->setEnabled(!m_settings->uploadPrntscrEnabled());
     m_autoCopyLink->setChecked(m_settings->autoCopyLink());
     m_autoCloseWindow->setChecked(m_settings->autoCloseUploadWindow());
 
@@ -250,6 +271,7 @@ void SettingsDialog::saveSettings() {
 
     // Upload & Network
     m_settings->setUploadEndpoint(m_uploadEndpointEdit->text().trimmed());
+    m_settings->setUploadPrntscrEnabled(m_prntscrCheck->isChecked());
     m_settings->setAutoCopyLink(m_autoCopyLink->isChecked());
     m_settings->setAutoCloseUploadWindow(m_autoCloseWindow->isChecked());
 

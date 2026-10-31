@@ -1,9 +1,45 @@
 #include "TextTool.h"
 #include <QPainterPath>
+#include <QTextLayout>
+#include <QTextOption>
 
-TextCommand::TextCommand(const QString &text, const QPointF &pos, const QFont &font, const QColor &color)
-    : m_text(text), m_pos(pos), m_font(font), m_color(color)
+TextCommand::TextCommand(const QString &text, const QPointF &pos, const QFont &font, const QColor &color, int boxWidth)
+    : m_text(text), m_pos(pos), m_font(font), m_color(color), m_boxWidth(boxWidth)
 {
+}
+
+QString TextCommand::wrapText(const QString &text, const QFont &font, qreal wrapWidth) {
+    if (wrapWidth <= 0 || text.isEmpty()) return text;
+
+    QStringList paragraphs = text.split('\n');
+    QStringList resultLines;
+
+    for (const QString &para : paragraphs) {
+        if (para.isEmpty()) {
+            resultLines.append(QString());
+            continue;
+        }
+
+        QTextLayout layout(para, font);
+        QTextOption opt;
+        opt.setWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+        layout.setTextOption(opt);
+        layout.beginLayout();
+
+        while (true) {
+            QTextLine line = layout.createLine();
+            if (!line.isValid()) break;
+            line.setLineWidth(wrapWidth);
+            QString lineStr = para.mid(line.textStart(), line.textLength());
+            while (lineStr.endsWith(' ') || lineStr.endsWith('\t') || lineStr.endsWith('\r')) {
+                lineStr.chop(1);
+            }
+            resultLines.append(lineStr);
+        }
+        layout.endLayout();
+    }
+
+    return resultLines.join('\n');
 }
 
 void TextCommand::paint(QPainter &painter) const {
@@ -17,7 +53,8 @@ void TextCommand::paint(QPainter &painter) const {
 
     QFontMetrics fm(m_font);
     int lineSpacing = fm.lineSpacing();
-    QStringList lines = m_text.split('\n');
+    QString textToDraw = (m_boxWidth > 0) ? wrapText(m_text, m_font, m_boxWidth) : m_text;
+    QStringList lines = textToDraw.split('\n');
 
     QPen outlinePen(QColor(0, 0, 0, 160), 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin);
 
@@ -34,7 +71,7 @@ void TextCommand::paint(QPainter &painter) const {
 }
 
 std::unique_ptr<AnnotationCommand> TextCommand::clone() const {
-    return std::make_unique<TextCommand>(m_text, m_pos, m_font, m_color);
+    return std::make_unique<TextCommand>(m_text, m_pos, m_font, m_color, m_boxWidth);
 }
 
 void TextTool::mousePress(const QPointF &pos) {

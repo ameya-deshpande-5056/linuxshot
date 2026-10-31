@@ -1,4 +1,5 @@
 #include "FloatingTextEditor.h"
+#include "annotation/TextTool.h"
 #include <QPainter>
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -43,20 +44,30 @@ void FloatingTextEditor::startEditing(const QRect &geometry, const QFont &font,
     update();
 }
 
+qreal FloatingTextEditor::contentWidth() const {
+    return qMax(20, width() - 2 * (BorderMargin + DocMargin));
+}
+
+QString FloatingTextEditor::wrappedText() const {
+    return TextCommand::wrapText(text(), m_font, contentWidth());
+}
+
 void FloatingTextEditor::commit() {
     if (!m_isEditing) return;
     m_isEditing = false;
 
-    QString t = text();
+    qreal wrapW = contentWidth();
+    QString t = TextCommand::wrapText(text(), m_font, wrapW);
     QPointF pos = baselinePos();
     QFont f = m_font;
     QColor c = m_color;
+    int bWidth = static_cast<int>(wrapW);
 
     hide();
     m_textEdit->clear();
 
     if (!t.trimmed().isEmpty()) {
-        emit committed(t, pos, f, c);
+        emit committed(t, pos, f, c, bWidth);
     }
 }
 

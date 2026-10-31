@@ -158,6 +158,15 @@ void SettingsManager::setUploadEndpoint(const QString &url) {
     emit settingsChanged();
 }
 
+bool SettingsManager::uploadPrntscrEnabled() const {
+    return m_settings->value("upload/prntscr_enabled", false).toBool();
+}
+
+void SettingsManager::setUploadPrntscrEnabled(bool enabled) {
+    m_settings->setValue("upload/prntscr_enabled", enabled);
+    emit settingsChanged();
+}
+
 bool SettingsManager::autoCopyLink() const {
     return m_settings->value("upload/auto_copy_link", true).toBool();
 }

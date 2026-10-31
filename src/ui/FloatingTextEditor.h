@@ -21,13 +21,15 @@ public:
     void setTextFont(const QFont &font);
 
     QString text() const;
+    QString wrappedText() const;
+    qreal contentWidth() const;
     QPointF baselinePos() const;
     QFont currentFont() const { return m_font; }
     QColor currentColor() const { return m_color; }
     bool isEditing() const { return m_isEditing; }
 
 signals:
-    void committed(const QString &text, const QPointF &baselinePos, const QFont &font, const QColor &color);
+    void committed(const QString &text, const QPointF &baselinePos, const QFont &font, const QColor &color, int boxWidth = 0);
     void cancelled();
 
 protected:

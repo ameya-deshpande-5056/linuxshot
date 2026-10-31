@@ -5,6 +5,22 @@ All notable changes to LinuxShot will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.3] - 2026-10-31
+
+### Added
+- Optional Lightshot (`prnt.sc`) screenshot upload provider (`PrntscrProvider`) in `UploadManager`.
+- Security warning disclaimer in Preferences ("Upload & Network" tab) alerting users that screenshots uploaded to `prnt.sc` are publicly viewable on the internet without authentication.
+- Dynamic mutually-exclusive settings toggle between custom self-hosted server endpoints and the public `prnt.sc` provider.
+- Complete automated unit test suite `test_upload_provider.cpp` verifying request signature hashing, salt determinism, and provider toggling.
+- Unit tests `testTextCommandWordWrap` and `testFloatingTextEditorWordWrap` in `tests/test_annotation_tools.cpp` verifying fixed-width word-wrapping and commitment fidelity.
+
+### Changed
+- Decrypted runtime AES-128-CBC salt from Lightshot client binaries to obtain the authentic signature salt (`5CE3DF4D45AC`) and MD5 request parameter hashing for `upload.prntscr.com`.
+- Refined multipart payload schema to omit `app_token` on anonymous uploads, matching server protocol requirements and preventing `Wrong params` rejection.
+
+### Fixed
+- Fixed text box word wrap vanishing upon commitment: `FloatingTextEditor` now commits text wrapped at the exact bounding box width, and `TextCommand` dynamically breaks words across lines matching on-screen editor layout via `QTextLayout`.
+
 ## [0.1.2] - 2026-10-31
 
 ### Changed

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 project(LinuxShot
-    VERSION 0.1.2
+    VERSION 0.1.3
     HOMEPAGE_URL "https://github.com/ameya-deshpande-5056/linuxshot"
     LANGUAGES CXX
 )
@@ -113,6 +113,7 @@ set(UPLOAD_SOURCES
     src/upload/UploadProvider.cpp
     src/upload/UploadManager.cpp
     src/upload/SelfHostedProvider.cpp
+    src/upload/PrntscrProvider.cpp
 )
 
 # Resources
@@ -222,8 +223,16 @@ if(BUILD_TESTS)
     target_link_libraries(test_icons PRIVATE Qt6::Core Qt6::Gui Qt6::Test Qt6::Widgets)
     add_test(NAME Icons COMMAND test_icons)
 
+    add_executable(test_upload_provider
+        tests/test_upload_provider.cpp
+        ${UPLOAD_SOURCES}
+    )
+    target_include_directories(test_upload_provider PRIVATE ${CMAKE_SOURCE_DIR}/src)
+    target_link_libraries(test_upload_provider PRIVATE Qt6::Core Qt6::Gui Qt6::Network Qt6::Test)
+    add_test(NAME UploadProvider COMMAND test_upload_provider)
+
     set_tests_properties(
-        CommandHistory Settings ImageExporter AnnotationTools Platform Icons
+        CommandHistory Settings ImageExporter AnnotationTools Platform Icons UploadProvider
         PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen"
     )
 

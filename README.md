@@ -65,7 +65,7 @@ Dual floating palettes docking to selection boundaries: vertical annotation pale
 </p>
 
 ### 4. Preferences & Settings
-Tabbed configuration dialog with persistent XDG storage (`~/.config/linuxshot/linuxshot.conf`) managing desktop notifications, global shortcuts, format encoders (PNG/JPEG/BMP) with quality tuning, and upload providers.
+Tabbed configuration dialog with persistent XDG storage (`~/.config/linuxshot/linuxshot.conf`) managing desktop notifications, global shortcuts, format encoders (PNG/JPEG/BMP) with quality tuning, custom self-hosted endpoints, and an optional public Lightshot (`prnt.sc`) upload provider with security warning disclaimer.
 
 <p align="center">
   <img src="docs/screenshots/04-preferences.png" alt="LinuxShot Preferences Dialog" width="560" />
@@ -93,7 +93,7 @@ Native dark-themed metadata dialog displaying the application logo, version, cli
   - **Rectangle**: Hollow bounding box outline.
   - **Circle / Ellipse**: Smooth rounded outline.
   - **Marker / Highlighter**: Semi-transparent highlighter with alpha blending.
-  - **Text**: Interactive inline draggable text box with on-canvas editing, dynamic multi-line height expansion, and click-outside commitment.
+  - **Text**: Interactive inline draggable text box with on-canvas editing, fixed-width word-wrapping, dynamic multi-line height expansion, and click-outside commitment.
   - **Blur / Pixelate**: Privacy blur and pixelation brush.
 - ↺ **Command History**: Full Undo (`Ctrl+Z`) and Redo (`Ctrl+Y`) vector action stack.
 - ⚡ **Dual Capture Engine**:
@@ -102,7 +102,7 @@ Native dark-themed metadata dialog displaying the application logo, version, cli
 - 💾 **Export & Sharing**:
   - Save to **PNG**, **JPEG**, and **BMP** with automatic file naming.
   - One-click copy to system clipboard (`Ctrl+C`).
-  - Pluggable asynchronous upload engine with self-hosted server support.
+  - Pluggable asynchronous upload engine with self-hosted server support and optional Lightshot (`prnt.sc`) public upload toggle.
 - 🖥️ **Desktop Integration**:
   - System tray icon with quick actions and persistent preferences dialog.
   - Modern dark-themed "About LinuxShot" dialog displaying version, Git commit hash, build timestamp, and Qt runtime metadata.
@@ -134,7 +134,7 @@ Native dark-themed metadata dialog displaying the application logo, version, cli
 Download the latest `.deb` package from the [Releases](https://github.com/ameya-deshpande-5056/linuxshot/releases) page and install:
 
 ```bash
-sudo dpkg -i linuxshot_0.1.2_amd64.deb
+sudo dpkg -i linuxshot_0.1.3_amd64.deb
 sudo apt-get install -f # resolve any runtime dependencies if prompted
 ```
 
@@ -143,8 +143,8 @@ sudo apt-get install -f # resolve any runtime dependencies if prompted
 Download the executable `.AppImage` from [Releases](https://github.com/ameya-deshpande-5056/linuxshot/releases), make it executable, and run:
 
 ```bash
-chmod +x LinuxShot-0.1.2-x86_64.AppImage
-./LinuxShot-0.1.2-x86_64.AppImage
+chmod +x LinuxShot-0.1.3-x86_64.AppImage
+./LinuxShot-0.1.3-x86_64.AppImage
 ```
 
 ---
@@ -209,10 +209,10 @@ sudo cmake --build build --target uninstall
 
 ```bash
 # Build Debian package (.deb)
-./packaging/build-deb.sh 0.1.2
+./packaging/build-deb.sh 0.1.3
 
 # Build AppImage (.AppImage)
-./packaging/build-appimage.sh 0.1.2
+./packaging/build-appimage.sh 0.1.3
 ```
 
 ---

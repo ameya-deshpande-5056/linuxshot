@@ -4,6 +4,7 @@
 #include <memory>
 #include "UploadProvider.h"
 #include "SelfHostedProvider.h"
+#include "PrntscrProvider.h"
 
 class UploadManager : public QObject {
     Q_OBJECT
@@ -15,6 +16,9 @@ public:
     void setEndpoint(const QString &url);
     QString endpoint() const;
 
+    void setPrntscrEnabled(bool enabled);
+    bool prntscrEnabled() const;
+
     void upload(const QImage &image, const UploadOptions &opts);
 
 signals:
@@ -22,6 +26,7 @@ signals:
     void uploadCompleted(const UploadResult &result);
 
 private:
-    std::unique_ptr<SelfHostedProvider> m_provider;
+    std::unique_ptr<SelfHostedProvider> m_selfHostedProvider;
+    std::unique_ptr<PrntscrProvider> m_prntscrProvider;
+    bool m_usePrntscr = false;
 };
-

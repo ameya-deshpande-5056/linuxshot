@@ -1,6 +1,6 @@
 # LinuxShot Project Status
 
-**Current Status**: Complete & Verified (v0.1.2)
+**Current Status**: Complete & Verified (v0.1.3)
 **Date**: 2026-10-31
 
 ---
@@ -80,7 +80,9 @@ All features implemented clean-room in modern C++20 with Qt 6:
   - Desktop notifications for save and copy events.
 - [x] **Upload Subsystem**:
   - Asynchronous HTTP multipart uploader (`SelfHostedProvider`).
-  - Configurable server endpoint URL.
+  - Optional togglable Lightshot / Prntscr upload provider (`PrntscrProvider`) with reverse-engineered token and hash calculation.
+  - Public upload warning disclaimer in UI.
+  - Configurable server endpoint URL for custom endpoints.
   - Automatic link clipboard copy upon successful response.
   - Proxy configuration (None, System, Manual).
 - [x] **Preferences & Persistence**:
@@ -99,12 +101,15 @@ All features implemented clean-room in modern C++20 with Qt 6:
 Automated tests verified via `ctest`:
 
 ```
-1/4 Test #1: CommandHistory ...................   Passed (7/7 tests passed)
-2/4 Test #2: Settings .........................   Passed (5/5 tests passed)
-3/4 Test #3: ImageExporter ....................   Passed (7/7 tests passed)
-4/4 Test #4: AnnotationTools ..................   Passed (10/10 tests passed)
+1/7 Test #1: CommandHistory ...................   Passed
+2/7 Test #2: Settings .........................   Passed
+3/7 Test #3: ImageExporter ....................   Passed
+4/7 Test #4: AnnotationTools ..................   Passed
+5/7 Test #5: Platform .........................   Passed
+6/7 Test #6: Icons ............................   Passed
+7/7 Test #7: UploadProvider ...................   Passed
 
-100% tests passed, 0 tests failed out of 4 test suites.
+100% tests passed, 0 tests failed out of 7 test suites.
 ```
 
 Runtime integration verification:
@@ -116,12 +121,12 @@ Runtime integration verification:
 ## 5. Distribution Packages
 
 1. **Debian / Ubuntu Package**:
-   - Location: `packaging/deb/linuxshot_0.1.0_amd64.deb`
-   - Size: ~135 KiB
+   - Location: `packaging/deb/linuxshot_0.1.3_amd64.deb`
+   - Size: ~140 KiB
    - Architecture: `amd64`
    - Fully packaged with desktop entry, scalable SVG icon, and dependencies.
 2. **AppImage Package**:
-   - Location: `packaging/appimage/LinuxShot-0.1.0-x86_64.AppImage`
+   - Location: `packaging/appimage/LinuxShot-0.1.3-x86_64.AppImage`
    - Verified executable with `--appimage-extract-and-run --version` and `--help`.
 3. **Flatpak Manifest**:
    - Location: `packaging/flatpak/org.linuxshot.LinuxShot.yaml`

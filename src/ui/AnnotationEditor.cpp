@@ -20,9 +20,9 @@ AnnotationEditor::AnnotationEditor(QWidget *parent)
 
     m_floatingTextEditor = new FloatingTextEditor(this);
     connect(m_floatingTextEditor, &FloatingTextEditor::committed, this,
-            [this](const QString &text, const QPointF &pos, const QFont &font, const QColor &color) {
+            [this](const QString &text, const QPointF &pos, const QFont &font, const QColor &color, int boxWidth) {
         if (!text.trimmed().isEmpty()) {
-            auto cmd = std::make_unique<TextCommand>(text, pos, font, color);
+            auto cmd = std::make_unique<TextCommand>(text, pos, font, color, boxWidth);
             m_history.addCommand(std::move(cmd));
             emit imageModified();
             update();

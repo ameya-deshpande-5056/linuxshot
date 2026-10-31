@@ -52,6 +52,8 @@ private:
 
     // Network / Upload widgets
     QLineEdit *m_uploadEndpointEdit = nullptr;
+    QCheckBox *m_prntscrCheck = nullptr;
+    QLabel *m_prntscrWarning = nullptr;
     QCheckBox *m_autoCopyLink = nullptr;
     QCheckBox *m_autoCloseWindow = nullptr;
     QComboBox *m_proxyCombo = nullptr;

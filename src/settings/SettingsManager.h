@@ -62,6 +62,9 @@ public:
     QString uploadEndpoint() const;
     void setUploadEndpoint(const QString &url);
 
+    bool uploadPrntscrEnabled() const;
+    void setUploadPrntscrEnabled(bool enabled);
+
     bool autoCopyLink() const;
     void setAutoCopyLink(bool autoCopy);
 

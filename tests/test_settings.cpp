@@ -25,6 +25,7 @@ void TestSettings::testDefaults() {
     QCOMPARE(settings.showNotifications(), true);
     QCOMPARE(settings.captureCursor(), false);
     QCOMPARE(settings.keepSelection(), false);
+    QCOMPARE(settings.uploadPrntscrEnabled(), false);
 }
 
 void TestSettings::testSetters() {
@@ -47,6 +48,9 @@ void TestSettings::testSetters() {
 
     settings.setPenWidth(8);
     QCOMPARE(settings.penWidth(), 8);
+
+    settings.setUploadPrntscrEnabled(true);
+    QCOMPARE(settings.uploadPrntscrEnabled(), true);
 }
 
 void TestSettings::testQualityBounds() {

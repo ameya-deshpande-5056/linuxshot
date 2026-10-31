@@ -24,6 +24,8 @@ private slots:
     void testMultiLineTextTool();
     void testBlurTool();
     void testFloatingTextEditorTopMargin();
+    void testTextCommandWordWrap();
+    void testFloatingTextEditorWordWrap();
 };
 
 void TestAnnotationTools::testPenTool() {
@@ -284,6 +286,94 @@ void TestAnnotationTools::testFloatingTextEditorTopMargin() {
     QCOMPARE(committedText, "Top Margin Text");
     QCOMPARE(committedPos, baseline);
     QVERIFY(!editor.isEditing());
+}
+
+void TestAnnotationTools::testTextCommandWordWrap() {
+    QFont font("Sans Serif", 14, QFont::Bold);
+    QString longText = "This is a long sentence typed into a drawn textbox with a fixed width.";
+
+    // When boxWidth <= 0, no wrapping occurs
+    TextCommand cmdNoWrap(longText, QPointF(10, 20), font, Qt::red, 0);
+    QCOMPARE(cmdNoWrap.text(), longText);
+
+    // Wrap to 160px
+    QString wrapped = TextCommand::wrapText(longText, font, 160.0);
+    QVERIFY(wrapped.contains('\n'));
+    QStringList lines = wrapped.split('\n');
+    QVERIFY(lines.size() >= 3);
+
+    QFontMetrics fm(font);
+    for (const QString &line : lines) {
+        QVERIFY(fm.horizontalAdvance(line) <= 165);
+    }
+
+    // Paint wrapped command and verify rendering across multiple vertical rows
+    TextCommand cmdWrapped(longText, QPointF(10, 25), font, Qt::red, 160);
+    QImage img(300, 200, QImage::Format_ARGB32_Premultiplied);
+    img.fill(Qt::white);
+    QPainter p(&img);
+    cmdWrapped.paint(p);
+    p.end();
+
+    // Verify row 1 and row 2 both have painted pixels
+    int lineSpacing = fm.lineSpacing();
+    bool foundRow1 = false;
+    for (int y = 15; y <= 30; ++y) {
+        for (int x = 10; x < 180; ++x) {
+            if (img.pixelColor(x, y) != Qt::white) {
+                foundRow1 = true;
+                break;
+            }
+        }
+        if (foundRow1) break;
+    }
+    QVERIFY(foundRow1);
+
+    bool foundRow2 = false;
+    for (int y = 25 + lineSpacing - 10; y <= 25 + lineSpacing + 10; ++y) {
+        for (int x = 10; x < 180; ++x) {
+            if (img.pixelColor(x, y) != Qt::white) {
+                foundRow2 = true;
+                break;
+            }
+        }
+        if (foundRow2) break;
+    }
+    QVERIFY(foundRow2);
+}
+
+void TestAnnotationTools::testFloatingTextEditorWordWrap() {
+    QWidget parent;
+    parent.resize(800, 600);
+
+    FloatingTextEditor editor(&parent);
+    QFont font("Sans Serif", 14, QFont::Bold);
+
+    // 160px width box
+    QRect box(30, 40, 160, 40);
+    QString input = "A quick brown fox jumps over the lazy dog and runs away.";
+    editor.startEditing(box, font, Qt::blue, input);
+
+    QString committedText;
+    int committedBoxWidth = 0;
+    QObject::connect(&editor, &FloatingTextEditor::committed,
+                     [&](const QString &t, const QPointF &, const QFont &, const QColor &, int bw) {
+        committedText = t;
+        committedBoxWidth = bw;
+    });
+
+    editor.commit();
+    // Committed text must contain newlines from word wrapping inside the 160px box
+    QVERIFY(committedText.contains('\n'));
+    QVERIFY(committedBoxWidth > 0);
+
+    QStringList lines = committedText.split('\n');
+    QVERIFY(lines.size() >= 2);
+
+    QFontMetrics fm(font);
+    for (const QString &line : lines) {
+        QVERIFY(fm.horizontalAdvance(line) <= committedBoxWidth + 5);
+    }
 }
 
 QTEST_MAIN(TestAnnotationTools)
