@@ -9,7 +9,7 @@
 
 2. Clone and build:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/ameya-deshpande-5056/linuxshot.git
    cd linuxshot
    mkdir build && cd build
    cmake .. -DCMAKE_BUILD_TYPE=Debug

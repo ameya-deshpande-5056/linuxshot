@@ -10,4 +10,5 @@ Categories=Utility;Graphics;
 Keywords=screenshot;capture;annotation;screen;
 StartupNotify=false
 X-GNOME-Autostart-enabled=false
+URL=https://github.com/ameya-deshpande-5056/linuxshot
 

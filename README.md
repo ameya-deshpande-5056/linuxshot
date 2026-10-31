@@ -116,7 +116,7 @@ Tabbed configuration dialog with persistent XDG storage (`~/.config/linuxshot/li
 
 ### Debian / Ubuntu (`.deb`)
 
-Download the latest `.deb` package from the [Releases](https://github.com/linuxshot/linuxshot/releases) page and install:
+Download the latest `.deb` package from the [Releases](https://github.com/ameya-deshpande-5056/linuxshot/releases) page and install:
 
 ```bash
 sudo dpkg -i linuxshot_0.1.0_amd64.deb
@@ -125,7 +125,7 @@ sudo apt-get install -f # resolve any runtime dependencies if prompted
 
 ### Standalone AppImage
 
-Download the executable `.AppImage` from [Releases](https://github.com/linuxshot/linuxshot/releases), make it executable, and run:
+Download the executable `.AppImage` from [Releases](https://github.com/ameya-deshpande-5056/linuxshot/releases), make it executable, and run:
 
 ```bash
 chmod +x LinuxShot-0.1.0-x86_64.AppImage
@@ -158,7 +158,7 @@ sudo apt-get install -y \
 
 ```bash
 # Clone the repository
-git clone https://github.com/linuxshot/linuxshot.git
+git clone https://github.com/ameya-deshpande-5056/linuxshot.git
 cd linuxshot
 
 # Configure and compile in Release mode

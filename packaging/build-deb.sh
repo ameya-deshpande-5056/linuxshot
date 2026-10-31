@@ -46,7 +46,8 @@ Version: ${VERSION}
 Section: graphics
 Priority: optional
 Architecture: ${ARCH}
-Maintainer: LinuxShot Developers <https://github.com/linuxshot/linuxshot>
+Maintainer: Ameya Deshpande <https://github.com/ameya-deshpande-5056/linuxshot>
+Homepage: https://github.com/ameya-deshpande-5056/linuxshot
 Depends: libc6, libgcc-s1, libgl1, ${QT_CORE_DEP}, ${QT_GUI_DEP}, ${QT_WIDGETS_DEP}, ${QT_DBUS_DEP}, ${QT_NET_DEP}, libstdc++6, libxcb1, libxcb-shm0, libxcb-keysyms1
 Description: Complete Linux screenshot application with region capture & annotation
  LinuxShot is a lightweight, high-performance desktop screenshot tool
