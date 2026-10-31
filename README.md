@@ -1,74 +1,187 @@
-# LinuxShot
+<div align="center">
 
-A complete, production-quality Linux-native screenshot application with region capture, annotation tools, and system integration.
+  <img src="resources/icons/linuxshot.svg" alt="LinuxShot Logo" width="128" height="128" />
 
-LinuxShot is an independently developed screenshot tool inspired by the workflow and interaction patterns of popular screenshot applications. It provides a compact, task-focused interface for capturing, annotating, and sharing screenshots on Linux.
+  # LinuxShot
+
+  **A fast, native Linux screenshot and interactive on-screen annotation tool.**
+
+  *Intuitive region capture, real-time vector annotations, zero-copy X11 capture, and transparent Wayland portal integration.*
+
+  <p align="center">
+    <a href="https://en.cppreference.com/w/cpp/20"><img src="https://img.shields.io/badge/C%2B%2B-20-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white" alt="C++20" /></a>
+    <a href="https://www.qt.io/"><img src="https://img.shields.io/badge/Qt-6.4%2B-41CD52?style=for-the-badge&logo=qt&logoColor=white" alt="Qt 6" /></a>
+    <a href="https://kernel.org/"><img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black" alt="Linux" /></a>
+    <a href="https://wayland.freedesktop.org/"><img src="https://img.shields.io/badge/Display-X11%20%7C%20Wayland-237804?style=for-the-badge" alt="X11 & Wayland" /></a>
+    <a href="https://cmake.org/"><img src="https://img.shields.io/badge/CMake-3.22%2B-064F8C?style=for-the-badge&logo=cmake&logoColor=white" alt="CMake" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-blue?style=for-the-badge" alt="License: GPL-3.0" /></a>
+  </p>
+
+  <p align="center">
+    <a href="#features">Features</a> •
+    <a href="#technologies-used">Technologies Used</a> •
+    <a href="#installation--packages">Installation</a> •
+    <a href="#building-from-source">Building</a> •
+    <a href="#usage--shortcuts">Usage & Shortcuts</a> •
+    <a href="#documentation">Documentation</a>
+  </p>
+
+</div>
+
+---
+
+## Overview
+
+**LinuxShot** is a clean-room, native Linux desktop application inspired by the fast, frictionless capture-and-annotate experience of Lightshot. Engineered from scratch with modern **C++20** and **Qt 6**, LinuxShot delivers instant multi-monitor screen acquisition, an interactive region selection overlay with 8 resize handles, on-the-fly vector drawing tools with unlimited undo/redo, and direct export to the clipboard, file system, or remote upload providers.
+
+---
 
 ## Features
 
-- **Full-screen and region capture** with intuitive selection interface
-- **Annotation tools**: pen, line, arrow, rectangle, marker, text, blur/pixelation
-- **Undo/redo** with command-based editing model
-- **Save/export** in PNG, JPEG, and BMP formats
-- **Clipboard integration** for quick sharing
-- **Pluggable upload system** with self-hosted backend support
-- **System tray integration** with configurable global shortcuts
-- **X11 and Wayland support** via platform abstraction
-- **Multi-monitor support**
-- **High-DPI display scaling**
-- **Configurable settings** with XDG-compliant storage
+- 📐 **Interactive Region Capture**:
+  - Full-screen and draggable bounding-box selection.
+  - 8 resize handles with real-time toolbar tracking during drag/resize operations.
+  - Dimension badge display showing precise selection width and height.
+- 🎨 **8 Vector Annotation Tools**:
+  - **Pen**: Smooth freehand vector pencil.
+  - **Line**: Straight line with angle snapping.
+  - **Arrow**: Directional pointer with sharp arrowhead.
+  - **Rectangle**: Hollow bounding box outline.
+  - **Circle / Ellipse**: Smooth rounded outline.
+  - **Marker / Highlighter**: Semi-transparent highlighter with alpha blending.
+  - **Text**: On-screen typography with custom fonts, colors, and sizing.
+  - **Blur / Pixelate**: Privacy blur and pixelation brush.
+- ↺ **Command History**: Full Undo (`Ctrl+Z`) and Redo (`Ctrl+Y`) vector action stack.
+- ⚡ **Dual Capture Engine**:
+  - **X11**: Zero-copy **XCB-SHM** (Shared Memory) frame acquisition.
+  - **Wayland**: Transparent D-Bus **XDG Desktop Portal** (`org.freedesktop.portal.Screenshot`) fallback.
+- 💾 **Export & Sharing**:
+  - Save to **PNG**, **JPEG**, and **BMP** with automatic file naming.
+  - One-click copy to system clipboard (`Ctrl+C`).
+  - Pluggable asynchronous upload engine with self-hosted server support.
+- 🖥️ **Desktop Integration**:
+  - System tray icon with quick actions and persistent preferences dialog.
+  - Global hotkeys (`Print Screen`, `Shift+Print Screen`).
+  - Self-contained SVG UI icons with dynamic dark-mode tinting.
+  - Multi-monitor awareness and native High-DPI scaling.
+  - XDG-compliant persistent configuration (`~/.config/linuxshot/linuxshot.conf`).
 
-## Requirements
+---
 
-- Linux (X11 or Wayland)
-- Qt 6.4+
-- CMake 3.22+
-- GCC 13+ or Clang 16+ (C++20 support)
+## Technologies Used
 
-### Runtime Dependencies
+| Technology | Purpose | Description |
+|:---|:---|:---|
+| **C++20** | Core Language | Structured concurrency, modern standard library algorithms, RAII, and type safety. |
+| **Qt 6** | UI & Application Framework | `QtWidgets`, `QtGui`, `QtSvg`, `QtNetwork`, and `QtDBus` for modern Linux desktop integration. |
+| **XCB / XCB-SHM** | X11 Capture & Shortcuts | Zero-copy shared-memory frame transfer and root window global shortcut grabber. |
+| **XDG Desktop Portal** | Wayland Capture | D-Bus screen capture interface compatible with GNOME, KDE Plasma, wlroots, and Sway. |
+| **CMake & CTest** | Build & Test System | Modern modular CMake build configuration and automated test suite. |
+| **AppImage & dpkg** | Packaging | Standalone portable AppImage binaries and standard Debian (`.deb`) packages. |
+| **GitHub Actions** | CI / CD Automation | Continuous integration and changelog-driven automated releases. |
 
-- `xdg-desktop-portal` (Wayland screenshot support)
-- `pipewire` (Wayland screen capture)
+---
 
-## Building
+## Installation & Packages
+
+### Debian / Ubuntu (`.deb`)
+
+Download the latest `.deb` package from the [Releases](https://github.com/linuxshot/linuxshot/releases) page and install:
 
 ```bash
-mkdir build && cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-cmake --build . -j$(nproc)
+sudo dpkg -i linuxshot_0.1.0_amd64.deb
+sudo apt-get install -f # resolve any runtime dependencies if prompted
 ```
 
-## Installation
+### Standalone AppImage
+
+Download the executable `.AppImage` from [Releases](https://github.com/linuxshot/linuxshot/releases), make it executable, and run:
 
 ```bash
-sudo cmake --install .
+chmod +x LinuxShot-0.1.0-x86_64.AppImage
+./LinuxShot-0.1.0-x86_64.AppImage
 ```
 
-## Usage
+---
 
-Launch from the application menu or terminal:
+## Building from Source
+
+### Prerequisites
+
+Install required development packages on Ubuntu / Debian:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y \
+  build-essential \
+  cmake \
+  qt6-base-dev \
+  libqt6svg6-dev \
+  libxcb1-dev \
+  libxcb-shm0-dev \
+  libxcb-keysyms1-dev \
+  libx11-dev \
+  squashfs-tools
+```
+
+### Compile
+
+```bash
+# Clone the repository
+git clone https://github.com/linuxshot/linuxshot.git
+cd linuxshot
+
+# Configure and compile in Release mode
+cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON
+cmake --build build -j$(nproc)
+
+# Run test suite
+ctest --test-dir build --output-on-failure
+```
+
+### Generate Packages Locally
+
+```bash
+# Build Debian package (.deb)
+./packaging/build-deb.sh 0.1.0
+
+# Build AppImage (.AppImage)
+./packaging/build-appimage.sh 0.1.0
+```
+
+---
+
+## Usage & Shortcuts
+
+Launch LinuxShot from your desktop application launcher or run:
 
 ```bash
 linuxshot
 ```
 
-### Keyboard Shortcuts
+### Default Shortcuts
 
-| Action | Default Shortcut |
-|--------|-----------------|
-| Capture region | Print Screen |
-| Full screen capture | Shift+Print Screen |
-| Cancel capture | Escape |
-| Save | Ctrl+S |
-| Copy to clipboard | Ctrl+C |
-| Undo | Ctrl+Z |
-| Redo | Ctrl+Y |
+| Action | Shortcut | Description |
+|:---|:---|:---|
+| **Capture Region** | `Print Screen` | Spawns fullscreen selection overlay |
+| **Fullscreen Capture** | `Shift + Print Screen` | Captures entire virtual desktop across all monitors |
+| **Save Image** | `Ctrl + S` | Opens file chooser to save image (PNG/JPEG/BMP) |
+| **Copy to Clipboard** | `Ctrl + C` | Copies current cropped screenshot to clipboard |
+| **Undo Annotation** | `Ctrl + Z` | Reverts the last vector drawing action |
+| **Redo Annotation** | `Ctrl + Y` | Re-applies the previously reverted action |
+| **Cancel Capture** | `Escape` | Dismisses selection overlay without saving |
+
+---
+
+## Documentation
+
+- [`AGENTS.md`](AGENTS.md) — Comprehensive architecture invariants, coding rules, and the strict release protocol for automated agents and developers.
+- [`ARCHITECTURE.md`](ARCHITECTURE.md) — Detailed software design specification, module boundaries, and subsystem lifecycles.
+- [`CHANGELOG.md`](CHANGELOG.md) — Keep a Changelog compliant release history.
+- [`PROJECT_STATUS.md`](PROJECT_STATUS.md) — Implementation phase status and testing breakdown.
+
+---
 
 ## License
 
-GPL-3.0-or-later — see [LICENSE](LICENSE) for details.
-
-## Contributing
-
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
-
+This project is licensed under the **GNU General Public License v3.0 or later** — see the [LICENSE](LICENSE) file for details.
