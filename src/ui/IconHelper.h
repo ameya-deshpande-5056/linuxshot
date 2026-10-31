@@ -17,3 +17,4 @@ public:
     static QIcon actionIcon(Action action, const QColor &color = QColor("#E2E8F0"));
     static QIcon toolIcon(ToolType tool, const QColor &color = QColor("#E2E8F0"));
 };
+

@@ -9,7 +9,34 @@ private slots:
     void testActionIcons();
     void testToolIcons();
     void testIconPixmaps();
+    void testRedesignedIcons();
 };
+
+void TestIcons::testRedesignedIcons() {
+    // 1. Text icon
+    QIcon textIcon = IconHelper::toolIcon(ToolType::Text);
+    QVERIFY(!textIcon.isNull());
+    QImage textImg = textIcon.pixmap(32, 32).toImage();
+    QCOMPARE(textImg.size(), QSize(32, 32));
+    // Verify pixels exist in center (letter T stem)
+    QVERIFY(qAlpha(textImg.pixel(16, 16)) > 0);
+
+    // 2. Undo icon
+    QIcon undoIcon = IconHelper::actionIcon(IconHelper::Action::Undo);
+    QVERIFY(!undoIcon.isNull());
+    QImage undoImg = undoIcon.pixmap(32, 32).toImage();
+    QCOMPARE(undoImg.size(), QSize(32, 32));
+    // Verify arrowhead tip has non-transparent pixels
+    QVERIFY(qAlpha(undoImg.pixel(6, 16)) > 0);
+
+    // 3. Upload icon
+    QIcon uploadIcon = IconHelper::actionIcon(IconHelper::Action::Upload);
+    QVERIFY(!uploadIcon.isNull());
+    QImage uploadImg = uploadIcon.pixmap(32, 32).toImage();
+    QCOMPARE(uploadImg.size(), QSize(32, 32));
+    // Verify arrow stem has non-transparent pixels
+    QVERIFY(qAlpha(uploadImg.pixel(16, 20)) > 0);
+}
 
 void TestIcons::testActionIcons() {
     IconHelper::Action actions[] = {

@@ -67,9 +67,9 @@ void SelectionOverlay::setupToolbars() {
 
     // 2. Horizontal Action Toolbar (Save, Copy, Upload, Close)
     m_actionBar = new Toolbar(Toolbar::Horizontal, this);
-    m_actionBar->addActionButton(IconHelper::actionIcon(IconHelper::Action::Upload), "Upload", "Upload to Server (Ctrl+D)");
-    m_actionBar->addActionButton(IconHelper::actionIcon(IconHelper::Action::Copy),   "Copy",   "Copy to Clipboard (Ctrl+C)");
-    m_actionBar->addActionButton(IconHelper::actionIcon(IconHelper::Action::Save),   "Save",   "Save As (Ctrl+S)");
+    m_actionBar->addActionButton(IconHelper::actionIcon(IconHelper::Action::Upload), "Upload", "Upload (Ctrl+D)");
+    m_actionBar->addActionButton(IconHelper::actionIcon(IconHelper::Action::Copy),   "Copy",   "Copy (Ctrl+C)");
+    m_actionBar->addActionButton(IconHelper::actionIcon(IconHelper::Action::Save),   "Save",   "Save (Ctrl+S)");
     m_actionBar->addSeparator();
     m_actionBar->addActionButton(IconHelper::actionIcon(IconHelper::Action::Cancel), "Cancel", "Cancel (Esc)");
 
@@ -80,13 +80,13 @@ void SelectionOverlay::setupToolbars() {
         close();
         QGuiApplication::processEvents();
 
-        if (action.startsWith("Upload")) {
+        if (action == "Upload") {
             emit uploadRequested(finalImg);
-        } else if (action.startsWith("Copy")) {
+        } else if (action == "Copy") {
             emit copyRequested(finalImg);
-        } else if (action.startsWith("Save")) {
+        } else if (action == "Save") {
             emit saveRequested(finalImg);
-        } else if (action.startsWith("Cancel")) {
+        } else if (action == "Cancel") {
             emit captureCancelled();
         }
     });

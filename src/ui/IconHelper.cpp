@@ -2,7 +2,6 @@
 #include <QPixmap>
 #include <QPainter>
 #include <QPainterPath>
-#include <QFile>
 
 static QPixmap createBasePixmap(int size = 32) {
     QPixmap pix(size, size);
@@ -20,19 +19,6 @@ static void setupPainter(QPainter &p, const QColor &color, double penWidth = 2.0
 }
 
 QIcon IconHelper::actionIcon(Action action, const QColor &color) {
-    QString resPath;
-    switch (action) {
-    case Action::Save:   resPath = ":/icons/lightshot/save.png"; break;
-    case Action::Copy:   resPath = ":/icons/lightshot/copy.png"; break;
-    case Action::Upload: resPath = ":/icons/lightshot/upload.png"; break;
-    case Action::Cancel: resPath = ":/icons/lightshot/cancel.png"; break;
-    case Action::Undo:   resPath = ":/icons/lightshot/undo.png"; break;
-    }
-
-    if (!resPath.isEmpty() && QFile::exists(resPath)) {
-        return QIcon(resPath);
-    }
-
     QPixmap pix = createBasePixmap(32);
     QPainter p(&pix);
 
@@ -71,37 +57,52 @@ QIcon IconHelper::actionIcon(Action action, const QColor &color) {
     }
     case Action::Upload: {
         setupPainter(p, color, 2.0);
-        // Cloud outline
+
+        // Cloud contour over the top
         QPainterPath cloud;
-        cloud.moveTo(6.0, 22.0);
-        cloud.arcTo(3.0, 15.0, 9.0, 9.0, 200, 150);
-        cloud.arcTo(9.0, 7.0, 14.0, 14.0, 150, 180);
-        cloud.arcTo(19.0, 13.0, 10.0, 10.0, 300, 150);
+        cloud.moveTo(6.5, 21.5);
+        cloud.arcTo(4.0, 14.0, 9.0, 9.0, 180, 150);
+        cloud.arcTo(10.0, 8.0, 12.0, 12.0, 150, 180);
+        cloud.arcTo(19.0, 13.0, 9.0, 9.0, 310, 150);
         p.drawPath(cloud);
 
-        // Upload arrow in center
-        p.drawLine(QPointF(16.0, 12.0), QPointF(16.0, 26.0));
-        p.drawLine(QPointF(11.0, 17.0), QPointF(16.0, 12.0));
-        p.drawLine(QPointF(21.0, 17.0), QPointF(16.0, 12.0));
+        // Bold solid upward arrow pointing into the cloud
+        p.setBrush(color);
+        p.setPen(Qt::NoPen);
+        QPolygonF arrow;
+        arrow << QPointF(16.0, 12.0)   // top tip
+              << QPointF(10.5, 18.0)   // left wing
+              << QPointF(13.5, 18.0)   // inner left notch
+              << QPointF(13.5, 25.5)   // bottom left stem
+              << QPointF(18.5, 25.5)   // bottom right stem
+              << QPointF(18.5, 18.0)   // inner right notch
+              << QPointF(21.5, 18.0);  // right wing
+        p.drawPolygon(arrow);
         break;
     }
     case Action::Cancel: {
-        setupPainter(p, QColor("#F87171"), 2.4); // Red cross
+        setupPainter(p, QColor("#F87171"), 2.4); // High-visibility red cross
         p.drawLine(QPointF(7.5, 7.5), QPointF(24.5, 24.5));
         p.drawLine(QPointF(24.5, 7.5), QPointF(7.5, 24.5));
         break;
     }
     case Action::Undo: {
-        setupPainter(p, color, 2.0);
-        // Curved arc
+        setupPainter(p, color, 2.4);
+
+        // Smooth curved arc
         QPainterPath arc;
-        arc.moveTo(25.0, 24.0);
-        arc.arcTo(7.0, 9.0, 18.0, 18.0, 0, 190);
+        arc.moveTo(23.5, 22.5);
+        arc.arcTo(9.0, 9.0, 15.0, 15.0, 0, 180);
         p.drawPath(arc);
 
-        // Arrowhead
-        p.drawLine(QPointF(7.0, 18.0), QPointF(4.0, 11.0));
-        p.drawLine(QPointF(13.0, 11.0), QPointF(4.0, 11.0));
+        // Solid filled arrowhead pointing left
+        p.setBrush(color);
+        p.setPen(Qt::NoPen);
+        QPolygonF head;
+        head << QPointF(5.0, 16.5)
+             << QPointF(12.5, 10.5)
+             << QPointF(12.5, 22.5);
+        p.drawPolygon(head);
         break;
     }
     }
@@ -110,22 +111,6 @@ QIcon IconHelper::actionIcon(Action action, const QColor &color) {
 }
 
 QIcon IconHelper::toolIcon(ToolType tool, const QColor &color) {
-    QString resPath;
-    switch (tool) {
-    case ToolType::Pen:       resPath = ":/icons/lightshot/pen.png"; break;
-    case ToolType::Line:      resPath = ":/icons/lightshot/line.png"; break;
-    case ToolType::Arrow:     resPath = ":/icons/lightshot/arrow.png"; break;
-    case ToolType::Rectangle: resPath = ":/icons/lightshot/rect.png"; break;
-    case ToolType::Circle:    resPath = ":/icons/lightshot/circle.png"; break;
-    case ToolType::Marker:    resPath = ":/icons/lightshot/marker.png"; break;
-    case ToolType::Text:      resPath = ":/icons/lightshot/text.png"; break;
-    case ToolType::Blur:      resPath = ":/icons/lightshot/blur.png"; break;
-    }
-
-    if (!resPath.isEmpty() && QFile::exists(resPath)) {
-        return QIcon(resPath);
-    }
-
     QPixmap pix = createBasePixmap(32);
     QPainter p(&pix);
 
@@ -185,12 +170,19 @@ QIcon IconHelper::toolIcon(ToolType tool, const QColor &color) {
         break;
     }
     case ToolType::Text: {
-        setupPainter(p, color, 2.4);
-        // Bold letter 'T'
-        p.drawLine(QPointF(6.0, 8.0), QPointF(26.0, 8.0));
-        p.drawLine(QPointF(16.0, 8.0), QPointF(16.0, 25.0));
-        // Bottom base serifs
-        p.drawLine(QPointF(12.0, 25.0), QPointF(20.0, 25.0));
+        p.setRenderHint(QPainter::Antialiasing, true);
+        p.setBrush(color);
+        p.setPen(Qt::NoPen);
+
+        // Clean, bold letter 'T' with serifs
+        QPainterPath path;
+        // Top crossbar
+        path.addRoundedRect(QRectF(5.0, 7.0, 22.0, 4.5), 1.0, 1.0);
+        // Vertical stem
+        path.addRoundedRect(QRectF(13.5, 10.5, 5.0, 14.5), 1.0, 1.0);
+        // Base serifs
+        path.addRoundedRect(QRectF(10.5, 22.5, 11.0, 3.0), 1.0, 1.0);
+        p.drawPath(path);
         break;
     }
     case ToolType::Blur: {
