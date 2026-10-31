@@ -131,6 +131,14 @@ void AnnotationEditor::clear() {
     m_history.clear();
 }
 
+void AnnotationEditor::addCommand(std::unique_ptr<AnnotationCommand> cmd) {
+    if (cmd) {
+        m_history.addCommand(std::move(cmd));
+        update();
+        emit imageModified();
+    }
+}
+
 bool AnnotationEditor::canUndo() const {
     return m_history.canUndo();
 }

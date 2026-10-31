@@ -18,6 +18,7 @@
   </p>
 
   <p align="center">
+    <a href="#screenshots">Screenshots</a> •
     <a href="#features">Features</a> •
     <a href="#technologies-used">Technologies Used</a> •
     <a href="#installation--packages">Installation</a> •
@@ -33,6 +34,35 @@
 ## Overview
 
 **LinuxShot** is a clean-room, native Linux desktop application inspired by the fast, frictionless capture-and-annotate experience of Lightshot. Engineered from scratch with modern **C++20** and **Qt 6**, LinuxShot delivers instant multi-monitor screen acquisition, an interactive region selection overlay with 8 resize handles, on-the-fly vector drawing tools with unlimited undo/redo, and direct export to the clipboard, file system, or remote upload providers.
+
+<p align="center">
+  <img src="docs/screenshots/02-annotations-showcase.png" alt="LinuxShot Vector Annotations Showcase" width="900" />
+</p>
+
+---
+
+## Screenshots
+
+### 1. Interactive Region Selection & Floating Toolbars
+Full-screen multi-monitor capture with darkened scrim, dynamic dimension badge (`880 × 520 px`), 8 interactive resize handles, and real-time floating toolbars.
+
+<p align="center">
+  <img src="docs/screenshots/01-region-selection.png" alt="LinuxShot Region Selection" width="850" />
+</p>
+
+### 2. On-Screen Vector Annotation Engine
+Comprehensive vector drawing suite featuring directional arrows, rectangles, circles, semi-transparent highlighter (marker), text typography callouts, straight lines, freehand pen strokes, and privacy blur/pixelate.
+
+<p align="center">
+  <img src="docs/screenshots/02-annotations-showcase.png" alt="LinuxShot Vector Annotations" width="850" />
+</p>
+
+### 3. Preferences & Configuration
+Tabbed configuration dialog with persistent XDG storage (`~/.config/linuxshot/linuxshot.conf`) managing desktop notifications, global shortcuts, format encoders (PNG/JPEG/BMP) with quality tuning, and upload providers.
+
+<p align="center">
+  <img src="docs/screenshots/04-preferences.png" alt="LinuxShot Preferences Dialog" width="600" />
+</p>
 
 ---
 

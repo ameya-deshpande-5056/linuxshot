@@ -15,6 +15,7 @@ public:
     ~AnnotationEditor() override = default;
 
     void setBaseImage(const QImage &image);
+    QImage baseImage() const { return m_baseImage; }
     void updateCrop(const QRect &geometry, const QImage &image);
     QImage getRenderedImage() const;
 
@@ -30,6 +31,7 @@ public:
     void undo();
     void redo();
     void clear();
+    void addCommand(std::unique_ptr<AnnotationCommand> cmd);
 
     bool canUndo() const;
     bool canRedo() const;

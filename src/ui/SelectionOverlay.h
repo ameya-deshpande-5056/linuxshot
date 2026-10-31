@@ -31,6 +31,10 @@ public:
     QRect selectionRect() const { return m_selection; }
     void setSelectionRect(const QRect &rect);
 
+    AnnotationEditor* editor() const { return m_editor; }
+    Toolbar* toolBar() const { return m_toolBar; }
+    Toolbar* actionBar() const { return m_actionBar; }
+
 signals:
     void saveRequested(const QImage &image);
     void copyRequested(const QImage &image);

@@ -181,5 +181,29 @@ if(BUILD_TESTS)
     target_include_directories(test_icons PRIVATE ${CMAKE_SOURCE_DIR}/src)
     target_link_libraries(test_icons PRIVATE Qt6::Core Qt6::Gui Qt6::Test Qt6::Widgets)
     add_test(NAME Icons COMMAND test_icons)
+
+    add_executable(generate_screenshots
+        tools/generate_screenshots.cpp
+        ${UI_SOURCES}
+        ${ANNOTATION_SOURCES}
+        ${SETTINGS_SOURCES}
+        ${EXPORT_SOURCES}
+        ${UPLOAD_SOURCES}
+        ${PLATFORM_SOURCES}
+        ${CAPTURE_SOURCES}
+        ${RESOURCES}
+    )
+    target_include_directories(generate_screenshots PRIVATE
+        ${CMAKE_SOURCE_DIR}/src
+        ${XCB_INCLUDE_DIRS}
+    )
+    target_link_libraries(generate_screenshots PRIVATE
+        Qt6::Core
+        Qt6::Gui
+        Qt6::Widgets
+        Qt6::Network
+        Qt6::DBus
+        ${XCB_LIBRARIES}
+    )
 endif()
 
