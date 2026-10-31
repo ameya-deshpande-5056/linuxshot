@@ -8,6 +8,7 @@
 #include "annotation/TextTool.h"
 #include "annotation/BlurTool.h"
 #include "annotation/CommandHistory.h"
+#include "ui/FloatingTextEditor.h"
 
 class TestAnnotationTools : public QObject {
     Q_OBJECT
@@ -22,6 +23,7 @@ private slots:
     void testTextTool();
     void testMultiLineTextTool();
     void testBlurTool();
+    void testFloatingTextEditorTopMargin();
 };
 
 void TestAnnotationTools::testPenTool() {
@@ -246,6 +248,42 @@ void TestAnnotationTools::testBlurTool() {
     QColor c1 = img.pixelColor(20, 20);
     QColor c2 = img.pixelColor(21, 20);
     QCOMPARE(c1, c2); // In a pixelated mosaic block, adjacent pixels have identical color!
+}
+
+void TestAnnotationTools::testFloatingTextEditorTopMargin() {
+    QWidget parent;
+    parent.resize(800, 600);
+
+    FloatingTextEditor editor(&parent);
+    QFont font("Sans Serif", 14, QFont::Bold);
+    QFontMetrics fm(font);
+
+    // Position directly on the top margin (y = 0)
+    QRect topRect(50, 0, 200, 38);
+    editor.startEditing(topRect, font, Qt::red, "Top Margin Text");
+
+    QCOMPARE(editor.text(), "Top Margin Text");
+    QCOMPARE(editor.y(), 0);
+
+    // Baseline calculation must have no header offset:
+    // y = editor.y() + BorderMargin + DocMargin + fm.ascent()
+    // With BorderMargin = 5, DocMargin = 2, it is 0 + 7 + fm.ascent()
+    QPointF baseline = editor.baselinePos();
+    QCOMPARE(baseline.y(), 0 + 5 + 2 + fm.ascent());
+
+    // Verify commit signal
+    QString committedText;
+    QPointF committedPos;
+    QObject::connect(&editor, &FloatingTextEditor::committed,
+                     [&](const QString &t, const QPointF &p, const QFont &, const QColor &) {
+        committedText = t;
+        committedPos = p;
+    });
+
+    editor.commit();
+    QCOMPARE(committedText, "Top Margin Text");
+    QCOMPARE(committedPos, baseline);
+    QVERIFY(!editor.isEditing());
 }
 
 QTEST_MAIN(TestAnnotationTools)

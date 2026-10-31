@@ -1,6 +1,6 @@
 # LinuxShot Project Status
 
-**Current Status**: Complete & Verified (v0.1.1)
+**Current Status**: Complete & Verified (v0.1.2)
 **Date**: 2026-10-31
 
 ---

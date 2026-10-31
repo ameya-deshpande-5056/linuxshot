@@ -11,7 +11,7 @@ int main(int argc, char *argv[]) {
 #ifdef LINUXSHOT_VERSION
     app.setApplicationVersion(LINUXSHOT_VERSION);
 #else
-    app.setApplicationVersion("0.1.1");
+    app.setApplicationVersion("0.1.2");
 #endif
     app.setWindowIcon(QIcon(":/icons/linuxshot.png"));
     app.setQuitOnLastWindowClosed(false);

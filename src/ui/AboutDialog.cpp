@@ -50,7 +50,7 @@ AboutDialog::AboutDialog(QWidget *parent)
 #ifdef LINUXSHOT_VERSION
         appVer = QStringLiteral(LINUXSHOT_VERSION);
 #else
-        appVer = QStringLiteral("0.1.1");
+        appVer = QStringLiteral("0.1.2");
 #endif
     }
 

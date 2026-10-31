@@ -24,7 +24,7 @@ public:
     QPointF baselinePos() const;
     QFont currentFont() const { return m_font; }
     QColor currentColor() const { return m_color; }
-    bool isEditing() const { return isVisible(); }
+    bool isEditing() const { return m_isEditing; }
 
 signals:
     void committed(const QString &text, const QPointF &baselinePos, const QFont &font, const QColor &color);
@@ -40,19 +40,19 @@ protected:
 private:
     void updateEditorStyle();
     void adjustHeightToContent();
-    QRect headerRect() const;
     bool isOverBorder(const QPoint &pos) const;
     void clampToParent();
 
     QPlainTextEdit *m_textEdit = nullptr;
     QFont m_font;
     QColor m_color = Qt::red;
+    bool m_isEditing = false;
 
     bool m_isDragging = false;
     QPoint m_dragStartGlobal;
     QPoint m_widgetStartPos;
 
-    static constexpr int HeaderHeight = 20;
-    static constexpr int BorderWidth = 4;
+    static constexpr int BorderMargin = 5;
+    static constexpr int DocMargin = 2;
 };
 

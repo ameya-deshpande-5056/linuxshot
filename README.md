@@ -134,7 +134,7 @@ Native dark-themed metadata dialog displaying the application logo, version, cli
 Download the latest `.deb` package from the [Releases](https://github.com/ameya-deshpande-5056/linuxshot/releases) page and install:
 
 ```bash
-sudo dpkg -i linuxshot_0.1.1_amd64.deb
+sudo dpkg -i linuxshot_0.1.2_amd64.deb
 sudo apt-get install -f # resolve any runtime dependencies if prompted
 ```
 
@@ -143,8 +143,8 @@ sudo apt-get install -f # resolve any runtime dependencies if prompted
 Download the executable `.AppImage` from [Releases](https://github.com/ameya-deshpande-5056/linuxshot/releases), make it executable, and run:
 
 ```bash
-chmod +x LinuxShot-0.1.1-x86_64.AppImage
-./LinuxShot-0.1.1-x86_64.AppImage
+chmod +x LinuxShot-0.1.2-x86_64.AppImage
+./LinuxShot-0.1.2-x86_64.AppImage
 ```
 
 ---
@@ -209,10 +209,10 @@ sudo cmake --build build --target uninstall
 
 ```bash
 # Build Debian package (.deb)
-./packaging/build-deb.sh 0.1.1
+./packaging/build-deb.sh 0.1.2
 
 # Build AppImage (.AppImage)
-./packaging/build-appimage.sh 0.1.1
+./packaging/build-appimage.sh 0.1.2
 ```
 
 ---
@@ -236,6 +236,7 @@ linuxshot
 | **Undo Annotation** | `Ctrl + Z` | Reverts the last vector drawing action |
 | **Redo Annotation** | `Ctrl + Y` | Re-applies the previously reverted action |
 | **Commit Text Box** | `Ctrl + Enter` / Click outside | Bakes active inline text box into the vector annotations |
+| **Reposition Text Box** | Drag border / `Alt + Drag` | Moves active text box across screenshot without headers |
 | **Cancel Capture** | `Escape` | Dismisses active text box or closes selection overlay |
 
 ---

@@ -50,7 +50,7 @@ void AnnotationEditor::initTools() {
 }
 
 void AnnotationEditor::commitFloatingText() {
-    if (m_floatingTextEditor && m_floatingTextEditor->isVisible()) {
+    if (m_floatingTextEditor && m_floatingTextEditor->isEditing()) {
         m_floatingTextEditor->commit();
     }
 }
@@ -211,7 +211,7 @@ void AnnotationEditor::mousePressEvent(QMouseEvent *event) {
     if (event->button() != Qt::LeftButton) return;
 
     // If floating text editor is currently active:
-    if (m_floatingTextEditor && m_floatingTextEditor->isVisible()) {
+    if (m_floatingTextEditor && m_floatingTextEditor->isEditing()) {
         QPoint pos = event->pos();
         if (!m_floatingTextEditor->geometry().contains(pos)) {
             // Click outside commits the textbox and makes it permanent!
@@ -257,7 +257,7 @@ void AnnotationEditor::mouseReleaseEvent(QMouseEvent *event) {
         // If user just clicked or made a very small drag, provide a comfortable default size
         if (boxRect.width() < 60 || boxRect.height() < 30) {
             int defaultW = 180;
-            int defaultH = 56;
+            int defaultH = 38;
             boxRect = QRect(m_textDragStart, QSize(defaultW, defaultH));
         }
 
