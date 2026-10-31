@@ -154,7 +154,22 @@ sudo apt-get install -y \
   squashfs-tools
 ```
 
-### Compile
+### Using Helper Scripts (Recommended)
+
+LinuxShot provides one-line scripts to automate building, testing, installing, and uninstalling:
+
+```bash
+# 1. Compile and run test suite
+./scripts/build.sh
+
+# 2. Install binary, desktop entry, and icons to /usr/local
+sudo ./scripts/install.sh
+
+# 3. Uninstall from the system (optional --purge to remove ~/.config/linuxshot)
+sudo ./scripts/uninstall.sh
+```
+
+### Manual CMake Build & Install
 
 ```bash
 # Clone the repository
@@ -167,6 +182,12 @@ cmake --build build -j$(nproc)
 
 # Run test suite
 ctest --test-dir build --output-on-failure
+
+# Install to system
+sudo cmake --install build
+
+# Uninstall from system
+sudo cmake --build build --target uninstall
 ```
 
 ### Generate Packages Locally

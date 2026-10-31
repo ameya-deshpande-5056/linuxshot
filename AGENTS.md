@@ -39,6 +39,10 @@ linuxshot/
 │   ├── deb/                     # Output directory for Debian packages
 │   ├── appimage/                # Output directory for AppImage binaries
 │   └── flatpak/                 # Flatpak build manifests
+├── scripts/
+│   ├── build.sh                 # Automated CMake configure, compile, and test script
+│   ├── install.sh               # System installer with desktop and icon cache hooks
+│   └── uninstall.sh             # System uninstaller with manifest & config cleanup
 ├── resources/
 │   ├── resources.qrc            # Qt Resource System definition
 │   └── icons/
@@ -126,7 +130,19 @@ When modifying this repository, **you must never violate these core invariants**
 
 ## 4. Building, Testing, and Packaging
 
-### Local Compilation
+### Automated Scripts (Recommended)
+```bash
+# Configure, compile, and run tests
+./scripts/build.sh
+
+# Install to /usr/local
+sudo ./scripts/install.sh
+
+# Uninstall
+sudo ./scripts/uninstall.sh
+```
+
+### Local Compilation via CMake
 ```bash
 # Configure Release build with tests enabled
 cmake -B build -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTS=ON

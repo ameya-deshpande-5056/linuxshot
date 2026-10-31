@@ -131,6 +131,18 @@ install(FILES packaging/linuxshot.desktop DESTINATION share/applications)
 install(FILES resources/icons/linuxshot.png DESTINATION share/icons/hicolor/256x256/apps)
 install(FILES resources/icons/linuxshot.svg DESTINATION share/icons/hicolor/scalable/apps)
 
+# Uninstall target
+if(NOT TARGET uninstall)
+    configure_file(
+        "${CMAKE_CURRENT_SOURCE_DIR}/cmake/cmake_uninstall.cmake.in"
+        "${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+        IMMEDIATE @ONLY
+    )
+    add_custom_target(uninstall
+        COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake
+    )
+endif()
+
 # Testing
 option(BUILD_TESTS "Build unit tests" ON)
 if(BUILD_TESTS)

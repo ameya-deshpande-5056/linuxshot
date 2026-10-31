@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - XDG-compliant persistent configuration (`~/.config/linuxshot/linuxshot.conf`).
 - Complete automated test suite covering command history, settings, codecs, tools, and platform detection.
 - Debian (`.deb`), AppImage, and Flatpak packaging targets.
+- Automated system management scripts: `scripts/build.sh`, `scripts/install.sh`, and `scripts/uninstall.sh`, along with CMake `uninstall` target.
 
 ### Changed
 - Real-time toolbar tracking during selection resize and move operations.
