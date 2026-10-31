@@ -124,3 +124,11 @@ Runtime integration verification:
    - Verified executable with `--appimage-extract-and-run --version` and `--help`.
 3. **Flatpak Manifest**:
    - Location: `packaging/flatpak/org.linuxshot.LinuxShot.yaml`
+
+---
+
+## 6. Recent Enhancements & Fixes
+
+- **Real-Time Toolbar Tracking**: Updated `SelectionOverlay` mouse handling so both vertical and horizontal toolbars dynamically track selection boundaries in real time as any of the 8 resize handles are dragged, rather than waiting until mouse release.
+- **Child Event Filter**: Added an event filter on `AnnotationEditor` to intercept hover and press events over edge handles (expanded 14px hit-box) so resize gestures can be initiated smoothly even after annotations have started.
+- **Non-Destructive Resizing**: Implemented `AnnotationEditor::updateCrop` to ensure active annotations are preserved when resizing selections.
