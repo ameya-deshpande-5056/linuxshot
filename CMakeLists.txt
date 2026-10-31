@@ -62,6 +62,7 @@ set(UI_SOURCES
     src/ui/TrayIcon.cpp
     src/ui/SettingsDialog.cpp
     src/ui/ColorButton.cpp
+    src/ui/IconHelper.cpp
 )
 
 set(ANNOTATION_SOURCES
@@ -171,5 +172,13 @@ if(BUILD_TESTS)
     target_include_directories(test_platform PRIVATE ${CMAKE_SOURCE_DIR}/src)
     target_link_libraries(test_platform PRIVATE Qt6::Core Qt6::Gui Qt6::DBus Qt6::Test)
     add_test(NAME Platform COMMAND test_platform)
+
+    add_executable(test_icons
+        tests/test_icons.cpp
+        src/ui/IconHelper.cpp
+    )
+    target_include_directories(test_icons PRIVATE ${CMAKE_SOURCE_DIR}/src)
+    target_link_libraries(test_icons PRIVATE Qt6::Core Qt6::Gui Qt6::Test Qt6::Widgets)
+    add_test(NAME Icons COMMAND test_icons)
 endif()
 

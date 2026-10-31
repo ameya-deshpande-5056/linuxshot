@@ -17,7 +17,9 @@ public:
     explicit Toolbar(Orientation orientation = Horizontal, QWidget *parent = nullptr);
     ~Toolbar() override = default;
 
+    QPushButton* addToolButton(int id, const QIcon &icon, const QString &tooltip);
     QPushButton* addToolButton(int id, const QString &text, const QString &tooltip);
+    QPushButton* addActionButton(const QIcon &icon, const QString &actionName, const QString &tooltip);
     QPushButton* addActionButton(const QString &text, const QString &tooltip);
     void addWidget(QWidget *widget);
     void addSeparator();

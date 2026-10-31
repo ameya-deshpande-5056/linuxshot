@@ -35,6 +35,7 @@ Toolbar::Toolbar(Orientation orientation, QWidget *parent)
         "   min-height: 26px;"
         "   max-width: 26px;"
         "   max-height: 26px;"
+        "   padding: 2px;"
         "}"
         "QPushButton:hover {"
         "   background-color: #3F3F3F;"
@@ -47,7 +48,23 @@ Toolbar::Toolbar(Orientation orientation, QWidget *parent)
         "QPushButton:pressed {"
         "   background-color: #154A99;"
         "}"
+        "QPushButton:disabled {"
+        "   opacity: 0.35;"
+        "}"
     );
+}
+
+QPushButton* Toolbar::addToolButton(int id, const QIcon &icon, const QString &tooltip) {
+    auto *btn = new QPushButton(this);
+    btn->setIcon(icon);
+    btn->setIconSize(QSize(18, 18));
+    btn->setCheckable(true);
+    btn->setToolTip(tooltip);
+    btn->setCursor(Qt::PointingHandCursor);
+
+    m_group->addButton(btn, id);
+    m_layout->addWidget(btn);
+    return btn;
 }
 
 QPushButton* Toolbar::addToolButton(int id, const QString &text, const QString &tooltip) {
@@ -57,6 +74,22 @@ QPushButton* Toolbar::addToolButton(int id, const QString &text, const QString &
     btn->setCursor(Qt::PointingHandCursor);
 
     m_group->addButton(btn, id);
+    m_layout->addWidget(btn);
+    return btn;
+}
+
+QPushButton* Toolbar::addActionButton(const QIcon &icon, const QString &actionName, const QString &tooltip) {
+    auto *btn = new QPushButton(this);
+    btn->setIcon(icon);
+    btn->setIconSize(QSize(18, 18));
+    btn->setCheckable(false);
+    btn->setToolTip(tooltip);
+    btn->setCursor(Qt::PointingHandCursor);
+
+    connect(btn, &QPushButton::clicked, this, [this, actionName]() {
+        emit actionTriggered(actionName);
+    });
+
     m_layout->addWidget(btn);
     return btn;
 }

@@ -178,6 +178,9 @@ void Application::onOverlaySave(const QImage &image) {
         m_settings->setLastSelection(m_overlay->selectionRect());
     }
 
+    m_overlay->hide();
+    QGuiApplication::processEvents();
+
     m_export->saveWithDialog(
         image,
         nullptr,

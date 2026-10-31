@@ -1,4 +1,5 @@
 #include "SelectionOverlay.h"
+#include "IconHelper.h"
 #include <QPainter>
 #include <QMouseEvent>
 #include <QKeyEvent>
@@ -25,21 +26,21 @@ SelectionOverlay::SelectionOverlay(QWidget *parent)
 void SelectionOverlay::setupToolbars() {
     // 1. Vertical Tool Toolbar (Annotation Tools)
     m_toolBar = new Toolbar(Toolbar::Vertical, this);
-    m_toolBar->addToolButton(static_cast<int>(ToolType::Pen),       "✎", "Pen");
-    m_toolBar->addToolButton(static_cast<int>(ToolType::Line),      "╱", "Line");
-    m_toolBar->addToolButton(static_cast<int>(ToolType::Arrow),     "➔", "Arrow");
-    m_toolBar->addToolButton(static_cast<int>(ToolType::Rectangle), "▭", "Rectangle");
-    m_toolBar->addToolButton(static_cast<int>(ToolType::Circle),    "◯", "Circle");
-    m_toolBar->addToolButton(static_cast<int>(ToolType::Marker),    "▮", "Marker");
-    m_toolBar->addToolButton(static_cast<int>(ToolType::Text),      "T", "Text");
-    m_toolBar->addToolButton(static_cast<int>(ToolType::Blur),      "▓", "Blur / Pixelate");
+    m_toolBar->addToolButton(static_cast<int>(ToolType::Pen),       IconHelper::toolIcon(ToolType::Pen),       "Pen");
+    m_toolBar->addToolButton(static_cast<int>(ToolType::Line),      IconHelper::toolIcon(ToolType::Line),      "Line");
+    m_toolBar->addToolButton(static_cast<int>(ToolType::Arrow),     IconHelper::toolIcon(ToolType::Arrow),     "Arrow");
+    m_toolBar->addToolButton(static_cast<int>(ToolType::Rectangle), IconHelper::toolIcon(ToolType::Rectangle), "Rectangle");
+    m_toolBar->addToolButton(static_cast<int>(ToolType::Circle),    IconHelper::toolIcon(ToolType::Circle),    "Circle");
+    m_toolBar->addToolButton(static_cast<int>(ToolType::Marker),    IconHelper::toolIcon(ToolType::Marker),    "Marker");
+    m_toolBar->addToolButton(static_cast<int>(ToolType::Text),      IconHelper::toolIcon(ToolType::Text),      "Text");
+    m_toolBar->addToolButton(static_cast<int>(ToolType::Blur),      IconHelper::toolIcon(ToolType::Blur),      "Blur / Pixelate");
 
     m_toolBar->addSeparator();
 
     m_colorBtn = new ColorButton(Qt::red, m_toolBar);
     m_toolBar->addWidget(m_colorBtn);
 
-    m_undoBtn = m_toolBar->addActionButton("↶", "Undo (Ctrl+Z)");
+    m_undoBtn = m_toolBar->addActionButton(IconHelper::actionIcon(IconHelper::Action::Undo), "Undo", "Undo (Ctrl+Z)");
     m_undoBtn->setEnabled(false);
 
     m_toolBar->setCheckedTool(static_cast<int>(ToolType::Pen));
@@ -66,27 +67,27 @@ void SelectionOverlay::setupToolbars() {
 
     // 2. Horizontal Action Toolbar (Save, Copy, Upload, Close)
     m_actionBar = new Toolbar(Toolbar::Horizontal, this);
-    m_actionBar->addActionButton("☁", "Upload to Server (Ctrl+D)");
-    m_actionBar->addActionButton("📋", "Copy to Clipboard (Ctrl+C)");
-    m_actionBar->addActionButton("💾", "Save As (Ctrl+S)");
+    m_actionBar->addActionButton(IconHelper::actionIcon(IconHelper::Action::Upload), "Upload", "Upload to Server (Ctrl+D)");
+    m_actionBar->addActionButton(IconHelper::actionIcon(IconHelper::Action::Copy),   "Copy",   "Copy to Clipboard (Ctrl+C)");
+    m_actionBar->addActionButton(IconHelper::actionIcon(IconHelper::Action::Save),   "Save",   "Save As (Ctrl+S)");
     m_actionBar->addSeparator();
-    m_actionBar->addActionButton("✕", "Cancel (Esc)");
+    m_actionBar->addActionButton(IconHelper::actionIcon(IconHelper::Action::Cancel), "Cancel", "Cancel (Esc)");
 
     connect(m_actionBar, &Toolbar::actionTriggered, this, [this](const QString &action) {
         QImage finalImg = m_editor->isVisible() ? m_editor->getRenderedImage()
                                                 : m_fullScreenshot.copy(m_selection);
+        hide();
+        close();
+        QGuiApplication::processEvents();
+
         if (action.startsWith("Upload")) {
             emit uploadRequested(finalImg);
-            close();
         } else if (action.startsWith("Copy")) {
             emit copyRequested(finalImg);
-            close();
         } else if (action.startsWith("Save")) {
             emit saveRequested(finalImg);
-            close();
         } else if (action.startsWith("Cancel")) {
             emit captureCancelled();
-            close();
         }
     });
 
@@ -434,8 +435,10 @@ bool SelectionOverlay::eventFilter(QObject *watched, QEvent *event) {
 
 void SelectionOverlay::keyPressEvent(QKeyEvent *event) {
     if (event->key() == Qt::Key_Escape) {
-        emit captureCancelled();
+        hide();
         close();
+        QGuiApplication::processEvents();
+        emit captureCancelled();
         return;
     }
 
@@ -451,8 +454,10 @@ void SelectionOverlay::keyPressEvent(QKeyEvent *event) {
         if (m_hasSelection) {
             QImage img = m_editor->isVisible() ? m_editor->getRenderedImage()
                                                : m_fullScreenshot.copy(m_selection);
-            emit copyRequested(img);
+            hide();
             close();
+            QGuiApplication::processEvents();
+            emit copyRequested(img);
         }
         return;
     }
@@ -461,8 +466,10 @@ void SelectionOverlay::keyPressEvent(QKeyEvent *event) {
         if (m_hasSelection) {
             QImage img = m_editor->isVisible() ? m_editor->getRenderedImage()
                                                : m_fullScreenshot.copy(m_selection);
-            emit saveRequested(img);
+            hide();
             close();
+            QGuiApplication::processEvents();
+            emit saveRequested(img);
         }
         return;
     }
