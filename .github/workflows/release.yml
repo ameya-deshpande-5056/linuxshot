@@ -104,6 +104,8 @@ jobs:
         run: cmake --build build -j$(nproc)
 
       - name: Run Test Suite
+        env:
+          QT_QPA_PLATFORM: offscreen
         run: ctest --test-dir build --output-on-failure
 
       - name: Build Debian Package

@@ -186,6 +186,11 @@ if(BUILD_TESTS)
     target_link_libraries(test_icons PRIVATE Qt6::Core Qt6::Gui Qt6::Test Qt6::Widgets)
     add_test(NAME Icons COMMAND test_icons)
 
+    set_tests_properties(
+        CommandHistory Settings ImageExporter AnnotationTools Platform Icons
+        PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen"
+    )
+
     add_executable(generate_screenshots
         tools/generate_screenshots.cpp
         ${UI_SOURCES}
