@@ -45,6 +45,13 @@ void AnnotationEditor::setBaseImage(const QImage &image) {
     update();
 }
 
+void AnnotationEditor::updateCrop(const QRect &geometry, const QImage &image) {
+    m_baseImage = image;
+    setGeometry(geometry);
+    setFixedSize(image.size());
+    update();
+}
+
 QImage AnnotationEditor::getRenderedImage() const {
     if (m_baseImage.isNull()) return QImage();
 

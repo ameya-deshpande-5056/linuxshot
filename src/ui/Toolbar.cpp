@@ -105,8 +105,11 @@ int Toolbar::checkedTool() const {
 }
 
 void Toolbar::updatePosition(const QRect &selectionRect, const QRect &screenBounds) {
-    adjustSize();
     QSize sz = size();
+    if (sz.width() < 10 || sz.height() < 10) {
+        adjustSize();
+        sz = size();
+    }
 
     if (m_orientation == Horizontal) {
         // Bottom toolbar: placed below selection; if off screen, place above

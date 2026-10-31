@@ -44,6 +44,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void showEvent(QShowEvent *event) override;
+    bool eventFilter(QObject *watched, QEvent *event) override;
 
 private:
     void setupToolbars();
@@ -52,7 +53,7 @@ private:
     void updateCursorForHandle(Handle h);
     QRect handleRect(Handle h) const;
     QList<QRect> allHandleRects() const;
-    void finalizeSelectionCrop();
+    void finalizeSelectionCrop(bool isNewCapture = true);
 
     QImage m_fullScreenshot;
     QRect m_selection;

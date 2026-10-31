@@ -15,6 +15,7 @@ public:
     ~AnnotationEditor() override = default;
 
     void setBaseImage(const QImage &image);
+    void updateCrop(const QRect &geometry, const QImage &image);
     QImage getRenderedImage() const;
 
     void setActiveTool(ToolType type);

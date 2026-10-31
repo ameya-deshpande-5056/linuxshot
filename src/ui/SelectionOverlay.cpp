@@ -16,6 +16,7 @@ SelectionOverlay::SelectionOverlay(QWidget *parent)
     setFocusPolicy(Qt::StrongFocus);
 
     m_editor = new AnnotationEditor(this);
+    m_editor->installEventFilter(this);
     m_editor->hide();
 
     setupToolbars();
@@ -155,14 +156,18 @@ QList<QRect> SelectionOverlay::allHandleRects() const {
 SelectionOverlay::Handle SelectionOverlay::handleAt(const QPoint &pos) const {
     if (!m_hasSelection) return None;
 
-    if (handleRect(TopLeft).contains(pos))     return TopLeft;
-    if (handleRect(TopRight).contains(pos))    return TopRight;
-    if (handleRect(BottomRight).contains(pos)) return BottomRight;
-    if (handleRect(BottomLeft).contains(pos))  return BottomLeft;
-    if (handleRect(Top).contains(pos))         return Top;
-    if (handleRect(Bottom).contains(pos))      return Bottom;
-    if (handleRect(Left).contains(pos))        return Left;
-    if (handleRect(Right).contains(pos))       return Right;
+    auto hitTest = [this, &pos](Handle h) {
+        return handleRect(h).adjusted(-3, -3, 3, 3).contains(pos);
+    };
+
+    if (hitTest(TopLeft))     return TopLeft;
+    if (hitTest(TopRight))    return TopRight;
+    if (hitTest(BottomRight)) return BottomRight;
+    if (hitTest(BottomLeft))  return BottomLeft;
+    if (hitTest(Top))         return Top;
+    if (hitTest(Bottom))      return Bottom;
+    if (hitTest(Left))        return Left;
+    if (hitTest(Right))       return Right;
 
     if (m_selection.contains(pos)) {
         return Move;
@@ -193,12 +198,16 @@ void SelectionOverlay::updateToolbarsPosition() {
     m_actionBar->updatePosition(m_selection, bounds);
 }
 
-void SelectionOverlay::finalizeSelectionCrop() {
+void SelectionOverlay::finalizeSelectionCrop(bool isNewCapture) {
     if (m_selection.width() < 10 || m_selection.height() < 10) return;
 
     QImage cropped = m_fullScreenshot.copy(m_selection);
+    if (isNewCapture) {
+        m_editor->setBaseImage(cropped);
+    } else {
+        m_editor->updateCrop(m_selection, cropped);
+    }
     m_editor->setGeometry(m_selection);
-    m_editor->setBaseImage(cropped);
     m_editor->show();
     m_editor->raise();
 
@@ -286,6 +295,11 @@ void SelectionOverlay::mousePressEvent(QMouseEvent *event) {
         m_dragStart = pos;
         m_selectionBeforeDrag = m_selection;
         m_editor->hide();
+        m_toolBar->show();
+        m_toolBar->raise();
+        m_actionBar->show();
+        m_actionBar->raise();
+        grabMouse();
     } else {
         // Start creating a brand new selection
         m_isCreatingSelection = true;
@@ -322,11 +336,30 @@ void SelectionOverlay::mouseMoveEvent(QMouseEvent *event) {
             case Bottom:      r.setBottom(r.bottom() + delta.y()); break;
             case BottomLeft:  r.setBottomLeft(r.bottomLeft() + delta); break;
             case Left:        r.setLeft(r.left() + delta.x()); break;
-            case Move:        r.translate(delta); break;
+            case Move: {
+                r.translate(delta);
+                if (r.left() < 0) r.moveLeft(0);
+                if (r.top() < 0) r.moveTop(0);
+                if (r.right() >= width()) r.moveRight(width() - 1);
+                if (r.bottom() >= height()) r.moveBottom(height() - 1);
+                break;
+            }
             default: break;
         }
 
-        m_selection = r.normalized().intersected(rect());
+        if (m_activeHandle != Move) {
+            m_selection = r.normalized().intersected(rect());
+        } else {
+            m_selection = r;
+        }
+
+        if (m_selection.width() >= 10 && m_selection.height() >= 10) {
+            updateToolbarsPosition();
+            m_toolBar->show();
+            m_toolBar->raise();
+            m_actionBar->show();
+            m_actionBar->raise();
+        }
         update();
         return;
     }
@@ -343,20 +376,60 @@ void SelectionOverlay::mouseReleaseEvent(QMouseEvent *event) {
         m_isCreatingSelection = false;
         if (m_selection.width() >= 10 && m_selection.height() >= 10) {
             m_hasSelection = true;
-            finalizeSelectionCrop();
+            finalizeSelectionCrop(true);
         } else {
             m_hasSelection = false;
             m_selection = QRect();
+            m_toolBar->hide();
+            m_actionBar->hide();
         }
     } else if (m_isDraggingHandle) {
+        if (mouseGrabber() == this) {
+            releaseMouse();
+        }
         m_isDraggingHandle = false;
         m_activeHandle = None;
         if (m_selection.width() >= 10 && m_selection.height() >= 10) {
-            finalizeSelectionCrop();
+            finalizeSelectionCrop(false);
         }
     }
 
     update();
+}
+
+bool SelectionOverlay::eventFilter(QObject *watched, QEvent *event) {
+    if (watched == m_editor) {
+        if (event->type() == QEvent::MouseMove) {
+            auto *me = static_cast<QMouseEvent *>(event);
+            QPoint pos = m_editor->mapTo(this, me->pos());
+            Handle h = handleAt(pos);
+            if (h != None && h != Move) {
+                updateCursorForHandle(h);
+                return true;
+            }
+        } else if (event->type() == QEvent::MouseButtonPress) {
+            auto *me = static_cast<QMouseEvent *>(event);
+            if (me->button() == Qt::LeftButton) {
+                QPoint pos = m_editor->mapTo(this, me->pos());
+                Handle h = handleAt(pos);
+                if (h != None && h != Move) {
+                    m_activeHandle = h;
+                    m_isDraggingHandle = true;
+                    m_dragStart = pos;
+                    m_selectionBeforeDrag = m_selection;
+                    m_editor->hide();
+                    m_toolBar->show();
+                    m_toolBar->raise();
+                    m_actionBar->show();
+                    m_actionBar->raise();
+                    grabMouse();
+                    update();
+                    return true;
+                }
+            }
+        }
+    }
+    return QWidget::eventFilter(watched, event);
 }
 
 void SelectionOverlay::keyPressEvent(QKeyEvent *event) {
