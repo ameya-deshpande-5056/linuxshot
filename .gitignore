@@ -8,4 +8,5 @@ setup-lightshot.exe
 .cache/
 linuxshot.lock
 research/extracted/
+research/extracted_rsrc/
 

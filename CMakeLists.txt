@@ -176,6 +176,7 @@ if(BUILD_TESTS)
     add_executable(test_icons
         tests/test_icons.cpp
         src/ui/IconHelper.cpp
+        ${RESOURCES}
     )
     target_include_directories(test_icons PRIVATE ${CMAKE_SOURCE_DIR}/src)
     target_link_libraries(test_icons PRIVATE Qt6::Core Qt6::Gui Qt6::Test Qt6::Widgets)

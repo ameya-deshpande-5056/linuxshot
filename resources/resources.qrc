@@ -1,6 +1,19 @@
 <RCC>
     <qresource prefix="/">
         <file>icons/linuxshot.png</file>
+        <file>icons/lightshot/upload.png</file>
+        <file>icons/lightshot/copy.png</file>
+        <file>icons/lightshot/save.png</file>
+        <file>icons/lightshot/cancel.png</file>
+        <file>icons/lightshot/pen.png</file>
+        <file>icons/lightshot/line.png</file>
+        <file>icons/lightshot/arrow.png</file>
+        <file>icons/lightshot/rect.png</file>
+        <file>icons/lightshot/circle.png</file>
+        <file>icons/lightshot/marker.png</file>
+        <file>icons/lightshot/text.png</file>
+        <file>icons/lightshot/blur.png</file>
+        <file>icons/lightshot/undo.png</file>
     </qresource>
 </RCC>
 

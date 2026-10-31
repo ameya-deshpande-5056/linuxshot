@@ -2,6 +2,7 @@
 #include <QPixmap>
 #include <QPainter>
 #include <QPainterPath>
+#include <QFile>
 
 static QPixmap createBasePixmap(int size = 32) {
     QPixmap pix(size, size);
@@ -19,6 +20,19 @@ static void setupPainter(QPainter &p, const QColor &color, double penWidth = 2.0
 }
 
 QIcon IconHelper::actionIcon(Action action, const QColor &color) {
+    QString resPath;
+    switch (action) {
+    case Action::Save:   resPath = ":/icons/lightshot/save.png"; break;
+    case Action::Copy:   resPath = ":/icons/lightshot/copy.png"; break;
+    case Action::Upload: resPath = ":/icons/lightshot/upload.png"; break;
+    case Action::Cancel: resPath = ":/icons/lightshot/cancel.png"; break;
+    case Action::Undo:   resPath = ":/icons/lightshot/undo.png"; break;
+    }
+
+    if (!resPath.isEmpty() && QFile::exists(resPath)) {
+        return QIcon(resPath);
+    }
+
     QPixmap pix = createBasePixmap(32);
     QPainter p(&pix);
 
@@ -96,6 +110,22 @@ QIcon IconHelper::actionIcon(Action action, const QColor &color) {
 }
 
 QIcon IconHelper::toolIcon(ToolType tool, const QColor &color) {
+    QString resPath;
+    switch (tool) {
+    case ToolType::Pen:       resPath = ":/icons/lightshot/pen.png"; break;
+    case ToolType::Line:      resPath = ":/icons/lightshot/line.png"; break;
+    case ToolType::Arrow:     resPath = ":/icons/lightshot/arrow.png"; break;
+    case ToolType::Rectangle: resPath = ":/icons/lightshot/rect.png"; break;
+    case ToolType::Circle:    resPath = ":/icons/lightshot/circle.png"; break;
+    case ToolType::Marker:    resPath = ":/icons/lightshot/marker.png"; break;
+    case ToolType::Text:      resPath = ":/icons/lightshot/text.png"; break;
+    case ToolType::Blur:      resPath = ":/icons/lightshot/blur.png"; break;
+    }
+
+    if (!resPath.isEmpty() && QFile::exists(resPath)) {
+        return QIcon(resPath);
+    }
+
     QPixmap pix = createBasePixmap(32);
     QPainter p(&pix);
 
