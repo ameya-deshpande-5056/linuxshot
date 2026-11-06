@@ -122,19 +122,19 @@ Runtime integration verification:
 ## 5. Distribution Packages
 
 1. **Debian / Ubuntu Package**:
-   - Location: `packaging/deb/linuxshot_0.1.3_amd64.deb`
+   - Location: `packaging/deb/linuxshot_0.1.4_amd64.deb`
    - Size: ~140 KiB
    - Architecture: `amd64`
    - Fully packaged with desktop entry, scalable SVG icon, and dependencies.
 2. **AppImage Package**:
-   - Location: `packaging/appimage/LinuxShot-0.1.3-x86_64.AppImage`
+   - Location: `packaging/appimage/LinuxShot-0.1.4-x86_64.AppImage`
    - Verified executable with `--appimage-extract-and-run --version` and `--help`.
 3. **Flatpak Package & Pipeline**:
    - Manifest: `packaging/flatpak/org.linuxshot.LinuxShot.yaml`
    - Metainfo: `packaging/flatpak/org.linuxshot.LinuxShot.metainfo.xml`
    - Desktop entry: `packaging/flatpak/org.linuxshot.LinuxShot.desktop`
    - Standalone builder: `packaging/build-flatpak.sh`
-   - Target bundle: `packaging/flatpak/LinuxShot-${VERSION}-x86_64.flatpak`
+   - Target bundle: `packaging/flatpak/LinuxShot-0.1.4-x86_64.flatpak`
    - Automated CI build and release attachment in `.github/workflows/ci.yml` and `.github/workflows/release.yml`.
 
 ---

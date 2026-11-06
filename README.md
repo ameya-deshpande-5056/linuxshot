@@ -13,6 +13,7 @@
     <a href="https://www.qt.io/"><img src="https://img.shields.io/badge/Qt-6.4%2B-41CD52?style=for-the-badge&logo=qt&logoColor=white" alt="Qt 6" /></a>
     <a href="https://kernel.org/"><img src="https://img.shields.io/badge/Linux-FCC624?style=for-the-badge&logo=linux&logoColor=black" alt="Linux" /></a>
     <a href="https://wayland.freedesktop.org/"><img src="https://img.shields.io/badge/Display-X11%20%7C%20Wayland-237804?style=for-the-badge" alt="X11 & Wayland" /></a>
+    <a href="https://flatpak.org/"><img src="https://img.shields.io/badge/Flatpak-org.linuxshot.LinuxShot-4A90E2?style=for-the-badge&logo=flatpak&logoColor=white" alt="Flatpak" /></a>
     <a href="https://cmake.org/"><img src="https://img.shields.io/badge/CMake-3.22%2B-064F8C?style=for-the-badge&logo=cmake&logoColor=white" alt="CMake" /></a>
     <a href="LICENSE"><img src="https://img.shields.io/badge/License-GPL--3.0-blue?style=for-the-badge" alt="License: GPL-3.0" /></a>
   </p>
@@ -86,6 +87,8 @@ Native dark-themed metadata dialog displaying the application logo, version, cli
   - Full-screen and draggable bounding-box selection.
   - 8 resize handles with real-time toolbar tracking during drag/resize operations.
   - Dimension badge display showing precise selection width and height.
+  - Non-destructive selection crop adjustments preserving active user annotations.
+  - **HiDPI & Fractional Scaling**: Native physical-coordinate screen capture under display zoom (>100%, 125%, 150%, 200%) eliminating truncated bottom and right edges on high-density displays.
 - 🎨 **8 Vector Annotation Tools**:
   - **Pen**: Smooth freehand vector pencil.
   - **Line**: Straight line with angle snapping.
@@ -97,8 +100,8 @@ Native dark-themed metadata dialog displaying the application logo, version, cli
   - **Blur / Pixelate**: Privacy blur and pixelation brush.
 - ↺ **Command History**: Full Undo (`Ctrl+Z`) and Redo (`Ctrl+Y`) vector action stack.
 - ⚡ **Dual Capture Engine**:
-  - **X11**: Zero-copy **XCB-SHM** (Shared Memory) frame acquisition.
-  - **Wayland**: Transparent D-Bus **XDG Desktop Portal** (`org.freedesktop.portal.Screenshot`) fallback.
+  - **X11**: Zero-copy **XCB-SHM** (Shared Memory) frame acquisition and root-window global shortcut grabbing (`Print Screen`, `Shift+Print Screen`).
+  - **Wayland**: Transparent D-Bus **XDG Desktop Portal** (`org.freedesktop.portal.Screenshot`) fallback with system tray controls and desktop custom shortcut integration.
 - 💾 **Export & Sharing**:
   - Save to **PNG**, **JPEG**, and **BMP** with automatic file naming.
   - One-click copy to system clipboard (`Ctrl+C`).
@@ -122,7 +125,7 @@ Native dark-themed metadata dialog displaying the application logo, version, cli
 | **XCB / XCB-SHM** | X11 Capture & Shortcuts | Zero-copy shared-memory frame transfer and root window global shortcut grabber. |
 | **XDG Desktop Portal** | Wayland Capture | D-Bus screen capture interface compatible with GNOME, KDE Plasma, wlroots, and Sway. |
 | **CMake & CTest** | Build & Test System | Modern modular CMake build configuration and automated test suite. |
-| **AppImage & dpkg** | Packaging | Standalone portable AppImage binaries and standard Debian (`.deb`) packages. |
+| **AppImage, Flatpak & dpkg** | Packaging | Standalone portable AppImage binaries, single-file Flatpak bundles, and standard Debian (`.deb`) packages. |
 | **GitHub Actions** | CI / CD Automation | Continuous integration and changelog-driven automated releases. |
 
 ---
@@ -134,7 +137,7 @@ Native dark-themed metadata dialog displaying the application logo, version, cli
 Download the latest `.deb` package from the [Releases](https://github.com/ameya-deshpande-5056/linuxshot/releases) page and install:
 
 ```bash
-sudo dpkg -i linuxshot_0.1.3_amd64.deb
+sudo dpkg -i linuxshot_0.1.4_amd64.deb
 sudo apt-get install -f # resolve any runtime dependencies if prompted
 ```
 
@@ -143,8 +146,17 @@ sudo apt-get install -f # resolve any runtime dependencies if prompted
 Download the executable `.AppImage` from [Releases](https://github.com/ameya-deshpande-5056/linuxshot/releases), make it executable, and run:
 
 ```bash
-chmod +x LinuxShot-0.1.3-x86_64.AppImage
-./LinuxShot-0.1.3-x86_64.AppImage
+chmod +x LinuxShot-0.1.4-x86_64.AppImage
+./LinuxShot-0.1.4-x86_64.AppImage
+```
+
+### Flatpak Bundle (`.flatpak`)
+
+Download the single-file `.flatpak` bundle from [Releases](https://github.com/ameya-deshpande-5056/linuxshot/releases) and install via Flatpak:
+
+```bash
+flatpak install --user packaging/flatpak/LinuxShot-0.1.4-x86_64.flatpak
+flatpak run org.linuxshot.LinuxShot
 ```
 
 ---
@@ -166,7 +178,9 @@ sudo apt-get install -y \
   libxcb-shm0-dev \
   libxcb-keysyms1-dev \
   libx11-dev \
-  squashfs-tools
+  squashfs-tools \
+  flatpak \
+  flatpak-builder
 ```
 
 ### Using Helper Scripts (Recommended)
@@ -208,11 +222,14 @@ sudo cmake --build build --target uninstall
 ### Generate Packages Locally
 
 ```bash
-# Build Debian package (.deb)
-./packaging/build-deb.sh 0.1.3
+# Build Debian package (.deb) -> packaging/deb/linuxshot_0.1.4_amd64.deb
+./packaging/build-deb.sh 0.1.4
 
-# Build AppImage (.AppImage)
-./packaging/build-appimage.sh 0.1.3
+# Build AppImage (.AppImage) -> packaging/appimage/LinuxShot-0.1.4-x86_64.AppImage
+./packaging/build-appimage.sh 0.1.4
+
+# Build Flatpak bundle (.flatpak) -> packaging/flatpak/LinuxShot-0.1.4-x86_64.flatpak
+./packaging/build-flatpak.sh 0.1.4
 ```
 
 ---
@@ -222,10 +239,17 @@ sudo cmake --build build --target uninstall
 Launch LinuxShot from your desktop application launcher or run:
 
 ```bash
+# Launch background service with system tray icon
 linuxshot
+
+# Trigger interactive region capture directly from CLI or custom shortcut
+linuxshot --capture      # or -c
+
+# Trigger immediate full desktop capture and save
+linuxshot --fullscreen   # or -f
 ```
 
-### Default Shortcuts
+### Default Shortcuts (X11)
 
 | Action | Shortcut | Description |
 |:---|:---|:---|
@@ -238,6 +262,9 @@ linuxshot
 | **Commit Text Box** | `Ctrl + Enter` / Click outside | Bakes active inline text box into the vector annotations |
 | **Reposition Text Box** | Drag border / `Alt + Drag` | Moves active text box across screenshot without headers |
 | **Cancel Capture** | `Escape` | Dismisses active text box or closes selection overlay |
+
+> [!NOTE]
+> **Wayland Desktop Integration**: Modern Wayland compositors (GNOME Wayland, KDE Plasma Wayland, Sway) intentionally disallow client applications from intercepting global keyboard events across all windows for sandbox security. When running on Wayland, you can trigger captures directly via the system tray menu, or bind your desktop environment's custom shortcut settings (e.g. *Settings → Keyboard → Custom Shortcuts*) to execute `linuxshot --capture` (or `flatpak run org.linuxshot.LinuxShot --capture`).
 
 ---
 
