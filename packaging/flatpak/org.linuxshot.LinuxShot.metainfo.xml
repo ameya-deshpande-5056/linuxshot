@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>org.linuxshot.LinuxShot</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>MIT</project_license>
+  <name>LinuxShot</name>
+  <summary>Native Linux screenshot and image-annotation application</summary>
+  <description>
+    <p>
+      LinuxShot is a native Linux screenshot and image-annotation tool delivering a fast,
+      intuitive region-capture and on-screen editing experience inspired by Lightshot.
+    </p>
+    <p>Features include:</p>
+    <ul>
+      <li>Fast region capture, full desktop capture, and multi-monitor support</li>
+      <li>8 vector annotation tools: pen, line, arrow, rectangle, circle, marker, text, and blur/pixelate</li>
+      <li>Unlimited Undo/Redo command history</li>
+      <li>X11 zero-copy capture via XCB-SHM and Wayland support via XDG Desktop Portal</li>
+      <li>Save to PNG, JPEG, and BMP formats or copy directly to clipboard</li>
+      <li>Custom self-hosted image upload endpoint and optional prnt.sc provider support</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">org.linuxshot.LinuxShot.desktop</launchable>
+  <url type="homepage">https://github.com/ameya-deshpande-5056/linuxshot</url>
+  <url type="bugtracker">https://github.com/ameya-deshpande-5056/linuxshot/issues</url>
+  <provides>
+    <binary>linuxshot</binary>
+  </provides>
+  <content_rating type="oars-1.1" />
+  <releases>
+    <release version="0.1.4" date="2026-11-06" />
+    <release version="0.1.3" date="2026-10-31" />
+  </releases>
+</component>

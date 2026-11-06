@@ -64,9 +64,16 @@ QImage PortalCaptureBackend::captureScreen(int screenIndex) {
 }
 
 QImage PortalCaptureBackend::captureFullDesktop() {
-    if (!m_portalAvailable) {
+    auto makeFallback = []() -> QImage {
         QScreen *primary = QGuiApplication::primaryScreen();
-        return primary ? primary->grabWindow(0).toImage() : QImage();
+        if (!primary) return QImage();
+        QImage img = primary->grabWindow(0).toImage();
+        img.setDevicePixelRatio(1.0);
+        return img;
+    };
+
+    if (!m_portalAvailable) {
+        return makeFallback();
     }
 
     QDBusInterface screenshotInterface(
@@ -77,8 +84,7 @@ QImage PortalCaptureBackend::captureFullDesktop() {
     );
 
     if (!screenshotInterface.isValid()) {
-        QScreen *primary = QGuiApplication::primaryScreen();
-        return primary ? primary->grabWindow(0).toImage() : QImage();
+        return makeFallback();
     }
 
     QVariantMap options;
@@ -88,8 +94,7 @@ QImage PortalCaptureBackend::captureFullDesktop() {
     QDBusMessage reply = screenshotInterface.call("Screenshot", "", options);
     if (reply.type() == QDBusMessage::ErrorMessage) {
         qWarning() << "Portal Screenshot call error:" << reply.errorMessage();
-        QScreen *primary = QGuiApplication::primaryScreen();
-        return primary ? primary->grabWindow(0).toImage() : QImage();
+        return makeFallback();
     }
 
     if (reply.arguments().isEmpty()) {
@@ -122,12 +127,13 @@ QImage PortalCaptureBackend::captureFullDesktop() {
         QUrl url(handler.uri);
         QString localPath = url.toLocalFile();
         if (QFile::exists(localPath)) {
-            return QImage(localPath);
+            QImage img(localPath);
+            img.setDevicePixelRatio(1.0);
+            return img;
         }
     }
 
-    QScreen *primary = QGuiApplication::primaryScreen();
-    return primary ? primary->grabWindow(0).toImage() : QImage();
+    return makeFallback();
 }
 
 #include "PortalCaptureBackend.moc"

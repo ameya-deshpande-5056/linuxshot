@@ -23,6 +23,7 @@ private slots:
     void testTextTool();
     void testMultiLineTextTool();
     void testBlurTool();
+    void testBlurToolScaled();
     void testFloatingTextEditorTopMargin();
     void testTextCommandWordWrap();
     void testFloatingTextEditorWordWrap();
@@ -250,6 +251,32 @@ void TestAnnotationTools::testBlurTool() {
     QColor c1 = img.pixelColor(20, 20);
     QColor c2 = img.pixelColor(21, 20);
     QCOMPARE(c1, c2); // In a pixelated mosaic block, adjacent pixels have identical color!
+}
+
+void TestAnnotationTools::testBlurToolScaled() {
+    // Test scale factor 1.5x (e.g., 150% screen zoom)
+    BlurCommand cmd(QRectF(10, 10, 40, 40));
+
+    // Physical image corresponding to 1.5x scale
+    QImage img(150, 150, QImage::Format_RGB32);
+    for (int y = 0; y < 150; ++y) {
+        for (int x = 0; x < 150; ++x) {
+            img.setPixelColor(x, y, ((x + y) % 2 == 0) ? Qt::black : Qt::white);
+        }
+    }
+
+    // Apply with scale 1.5x
+    cmd.applyToImage(img, 1.5, 1.5);
+
+    // In physical coordinates, rect (10, 10, 40, 40) maps to (15, 15, 60, 60)
+    QColor c1 = img.pixelColor(30, 30);
+    QColor c2 = img.pixelColor(31, 30);
+    QCOMPARE(c1, c2); // Mosaic block has unified average color
+
+    // Pixels outside the scaled blur region (e.g. at 100, 100) should remain unblurred checkerboard
+    QColor out1 = img.pixelColor(100, 100);
+    QColor out2 = img.pixelColor(101, 100);
+    QVERIFY(out1 != out2);
 }
 
 void TestAnnotationTools::testFloatingTextEditorTopMargin() {

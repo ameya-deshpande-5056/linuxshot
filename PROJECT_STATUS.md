@@ -1,7 +1,7 @@
 # LinuxShot Project Status
 
-**Current Status**: Complete & Verified (v0.1.3)
-**Date**: 2026-10-31
+**Current Status**: Complete & Verified (v0.1.4)
+**Date**: 2026-11-06
 
 ---
 
@@ -101,15 +101,16 @@ All features implemented clean-room in modern C++20 with Qt 6:
 Automated tests verified via `ctest`:
 
 ```
-1/7 Test #1: CommandHistory ...................   Passed
-2/7 Test #2: Settings .........................   Passed
-3/7 Test #3: ImageExporter ....................   Passed
-4/7 Test #4: AnnotationTools ..................   Passed
-5/7 Test #5: Platform .........................   Passed
-6/7 Test #6: Icons ............................   Passed
-7/7 Test #7: UploadProvider ...................   Passed
+1/8 Test #1: CommandHistory ...................   Passed
+2/8 Test #2: Settings .........................   Passed
+3/8 Test #3: ImageExporter ....................   Passed
+4/8 Test #4: AnnotationTools ..................   Passed
+5/8 Test #5: Platform .........................   Passed
+6/8 Test #6: Icons ............................   Passed
+7/8 Test #7: UploadProvider ...................   Passed
+8/8 Test #8: SelectionOverlay .................   Passed
 
-100% tests passed, 0 tests failed out of 7 test suites.
+100% tests passed, 0 tests failed out of 8 test suites.
 ```
 
 Runtime integration verification:
@@ -128,13 +129,19 @@ Runtime integration verification:
 2. **AppImage Package**:
    - Location: `packaging/appimage/LinuxShot-0.1.3-x86_64.AppImage`
    - Verified executable with `--appimage-extract-and-run --version` and `--help`.
-3. **Flatpak Manifest**:
-   - Location: `packaging/flatpak/org.linuxshot.LinuxShot.yaml`
+3. **Flatpak Package & Pipeline**:
+   - Manifest: `packaging/flatpak/org.linuxshot.LinuxShot.yaml`
+   - Metainfo: `packaging/flatpak/org.linuxshot.LinuxShot.metainfo.xml`
+   - Desktop entry: `packaging/flatpak/org.linuxshot.LinuxShot.desktop`
+   - Standalone builder: `packaging/build-flatpak.sh`
+   - Target bundle: `packaging/flatpak/LinuxShot-${VERSION}-x86_64.flatpak`
+   - Automated CI build and release attachment in `.github/workflows/ci.yml` and `.github/workflows/release.yml`.
 
 ---
 
 ## 6. Recent Enhancements & Fixes
 
+- **HiDPI & Screen Zoom Screen Capture**: Fixed truncated desktop captures on displays with screen zoom (> 100%) or fractional scaling. `X11CaptureBackend` now captures the full physical root window dimensions via XCB-SHM and composite fallback instead of being truncated to Qt logical bounds. `SelectionOverlay` now maps logical widget coordinates to physical screenshot dimensions when cropping and rendering, and `AnnotationEditor` properly scales vector annotations and pixelation blocks at native resolution.
 - **Real-Time Toolbar Tracking**: Updated `SelectionOverlay` mouse handling so both vertical and horizontal toolbars dynamically track selection boundaries in real time as any of the 8 resize handles are dragged, rather than waiting until mouse release.
 - **Child Event Filter**: Added an event filter on `AnnotationEditor` to intercept hover and press events over edge handles (expanded 14px hit-box) so resize gestures can be initiated smoothly even after annotations have started.
 - **Non-Destructive Resizing**: Implemented `AnnotationEditor::updateCrop` to ensure active annotations are preserved when resizing selections.

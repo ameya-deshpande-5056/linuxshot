@@ -58,6 +58,7 @@ private:
     QRect handleRect(Handle h) const;
     QList<QRect> allHandleRects() const;
     void finalizeSelectionCrop(bool isNewCapture = true);
+    QImage croppedSelectionImage() const;
 
     QImage m_fullScreenshot;
     QRect m_selection;

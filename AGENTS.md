@@ -35,10 +35,11 @@ linuxshot/
 ├── packaging/
 │   ├── build-deb.sh             # Reproducible Debian (.deb) builder
 │   ├── build-appimage.sh        # Reproducible Type-2 AppImage builder
+│   ├── build-flatpak.sh         # Reproducible Flatpak (.flatpak) builder
 │   ├── linuxshot.desktop        # FreeDesktop application entry
 │   ├── deb/                     # Output directory for Debian packages
 │   ├── appimage/                # Output directory for AppImage binaries
-│   └── flatpak/                 # Flatpak build manifests
+│   └── flatpak/                 # Flatpak build manifests and bundles
 ├── scripts/
 │   ├── build.sh                 # Automated CMake configure, compile, and test script
 │   ├── install.sh               # System installer with desktop and icon cache hooks
@@ -173,6 +174,9 @@ LinuxShot provides standalone packaging scripts that run both locally and in CI:
 
 # Build AppImage (.AppImage) -> packaging/appimage/LinuxShot-<version>-x86_64.AppImage
 ./packaging/build-appimage.sh 0.1.0
+
+# Build Flatpak bundle (.flatpak) -> packaging/flatpak/LinuxShot-<version>-x86_64.flatpak
+./packaging/build-flatpak.sh 0.1.0
 ```
 
 ---
@@ -234,6 +238,7 @@ When tasked with releasing a new version or preparing an update, follow this str
    ./scripts/build.sh
    ./packaging/build-deb.sh 0.2.0
    ./packaging/build-appimage.sh 0.2.0
+   ./packaging/build-flatpak.sh 0.2.0
    ```
 
 6. **Step 6: Commit and Tag**
@@ -254,5 +259,6 @@ Once pushed, `.github/workflows/release.yml` will automatically:
 - Run all 6 test suites.
 - Build `packaging/deb/linuxshot_0.2.0_amd64.deb`.
 - Build `packaging/appimage/LinuxShot-0.2.0-x86_64.AppImage`.
+- Build `packaging/flatpak/LinuxShot-0.2.0-x86_64.flatpak`.
 - Generate `packaging/SHA256SUMS.txt`.
-- Publish the GitHub Release with the extracted changelog notes and all 3 release assets attached.
+- Publish the GitHub Release with the extracted changelog notes and all 4 release assets attached.

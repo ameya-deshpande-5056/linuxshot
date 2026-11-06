@@ -80,47 +80,103 @@ QImage X11CaptureBackend::captureScreen(int screenIndex) {
     }
 
     if (!target) return QImage();
+
+    const qreal dpr = target->devicePixelRatio();
     const QRect geom = target->geometry();
+    const QRect physGeom(
+        qRound(geom.x() * dpr),
+        qRound(geom.y() * dpr),
+        qRound(geom.width() * dpr),
+        qRound(geom.height() * dpr)
+    );
 
     // Prefer fast SHM capture if available
     if (m_shmAvailable && isAvailable()) {
-        QImage shmImg = captureViaShm(geom);
+        QImage shmImg = captureViaShm(physGeom);
         if (!shmImg.isNull()) {
             return shmImg;
         }
     }
 
     // High-fidelity fallback using Qt's screen grab (which handles HiDPI & composition)
-    QPixmap pm = target->grabWindow(0, 0, 0, geom.width(), geom.height());
-    return pm.toImage();
+    QPixmap pm = target->grabWindow(0);
+    QImage img = pm.toImage();
+    img.setDevicePixelRatio(1.0);
+    return img;
 }
 
 QImage X11CaptureBackend::captureFullDesktop() {
     const auto screens = QGuiApplication::screens();
     if (screens.isEmpty()) return QImage();
 
-    // Calculate virtual desktop bounding box
-    QRect bounding;
-    for (QScreen *screen : screens) {
-        bounding = bounding.united(screen->geometry());
+    // Query native physical root window geometry if available
+    QRect rootGeom;
+    if (m_connection && m_rootWindow != 0) {
+        xcb_get_geometry_cookie_t cookie = xcb_get_geometry(m_connection, m_rootWindow);
+        xcb_get_geometry_reply_t *reply = xcb_get_geometry_reply(m_connection, cookie, nullptr);
+        if (reply) {
+            rootGeom = QRect(reply->x, reply->y, reply->width, reply->height);
+            free(reply);
+        }
     }
 
-    if (m_shmAvailable && isAvailable()) {
-        QImage shmImg = captureViaShm(bounding);
+    // Fallback physical bounding calculation across screens
+    if (rootGeom.isEmpty()) {
+        for (QScreen *screen : screens) {
+            const qreal dpr = screen->devicePixelRatio();
+            const QRect g = screen->geometry();
+            const QRect phys(
+                qRound(g.x() * dpr),
+                qRound(g.y() * dpr),
+                qRound(g.width() * dpr),
+                qRound(g.height() * dpr)
+            );
+            rootGeom = rootGeom.united(phys);
+        }
+    }
+
+    if (m_shmAvailable && isAvailable() && !rootGeom.isEmpty()) {
+        QImage shmImg = captureViaShm(rootGeom);
         if (!shmImg.isNull()) {
             return shmImg;
         }
     }
 
     // Stitch together screens with native grabWindow
-    QImage combined(bounding.size(), QImage::Format_ARGB32_Premultiplied);
+    QRect physBounding;
+    for (QScreen *screen : screens) {
+        const qreal dpr = screen->devicePixelRatio();
+        const QRect g = screen->geometry();
+        const QRect phys(
+            qRound(g.x() * dpr),
+            qRound(g.y() * dpr),
+            qRound(g.width() * dpr),
+            qRound(g.height() * dpr)
+        );
+        physBounding = physBounding.united(phys);
+    }
+
+    if (physBounding.isEmpty()) return QImage();
+
+    QImage combined(physBounding.size(), QImage::Format_ARGB32_Premultiplied);
     combined.fill(Qt::black);
 
     QPainter painter(&combined);
     for (QScreen *screen : screens) {
+        const qreal dpr = screen->devicePixelRatio();
         const QRect g = screen->geometry();
-        QPixmap pm = screen->grabWindow(0, 0, 0, g.width(), g.height());
-        painter.drawPixmap(g.topLeft() - bounding.topLeft(), pm);
+        const QRect phys(
+            qRound(g.x() * dpr),
+            qRound(g.y() * dpr),
+            qRound(g.width() * dpr),
+            qRound(g.height() * dpr)
+        );
+        QPixmap pm = screen->grabWindow(0);
+        if (!pm.isNull()) {
+            QImage screenImg = pm.toImage();
+            screenImg.setDevicePixelRatio(1.0);
+            painter.drawImage(phys.topLeft() - physBounding.topLeft(), screenImg);
+        }
     }
     painter.end();
 

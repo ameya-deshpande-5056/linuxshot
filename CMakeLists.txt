@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 project(LinuxShot
-    VERSION 0.1.3
+    VERSION 0.1.4
     HOMEPAGE_URL "https://github.com/ameya-deshpande-5056/linuxshot"
     LANGUAGES CXX
 )
@@ -152,8 +152,12 @@ target_link_libraries(linuxshot PRIVATE
 # Install
 install(TARGETS linuxshot RUNTIME DESTINATION bin)
 install(FILES packaging/linuxshot.desktop DESTINATION share/applications)
+install(FILES packaging/flatpak/org.linuxshot.LinuxShot.desktop DESTINATION share/applications)
+install(FILES packaging/flatpak/org.linuxshot.LinuxShot.metainfo.xml DESTINATION share/metainfo)
 install(FILES resources/icons/linuxshot.png DESTINATION share/icons/hicolor/256x256/apps)
 install(FILES resources/icons/linuxshot.svg DESTINATION share/icons/hicolor/scalable/apps)
+install(FILES resources/icons/linuxshot.png DESTINATION share/icons/hicolor/256x256/apps RENAME org.linuxshot.LinuxShot.png)
+install(FILES resources/icons/linuxshot.svg DESTINATION share/icons/hicolor/scalable/apps RENAME org.linuxshot.LinuxShot.svg)
 
 # Uninstall target
 if(NOT TARGET uninstall)
@@ -231,8 +235,23 @@ if(BUILD_TESTS)
     target_link_libraries(test_upload_provider PRIVATE Qt6::Core Qt6::Gui Qt6::Network Qt6::Test)
     add_test(NAME UploadProvider COMMAND test_upload_provider)
 
+    add_executable(test_selection_overlay
+        tests/test_selection_overlay.cpp
+        src/ui/SelectionOverlay.cpp
+        src/ui/AnnotationEditor.cpp
+        src/ui/FloatingTextEditor.cpp
+        src/ui/Toolbar.cpp
+        src/ui/ColorButton.cpp
+        src/ui/IconHelper.cpp
+        ${ANNOTATION_SOURCES}
+        ${RESOURCES}
+    )
+    target_include_directories(test_selection_overlay PRIVATE ${CMAKE_SOURCE_DIR}/src)
+    target_link_libraries(test_selection_overlay PRIVATE Qt6::Core Qt6::Gui Qt6::Widgets Qt6::Test)
+    add_test(NAME SelectionOverlay COMMAND test_selection_overlay)
+
     set_tests_properties(
-        CommandHistory Settings ImageExporter AnnotationTools Platform Icons UploadProvider
+        CommandHistory Settings ImageExporter AnnotationTools Platform Icons UploadProvider SelectionOverlay
         PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen"
     )
 

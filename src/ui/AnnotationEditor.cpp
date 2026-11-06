@@ -59,15 +59,17 @@ void AnnotationEditor::setBaseImage(const QImage &image) {
     commitFloatingText();
     m_baseImage = image;
     m_history.clear();
-    setFixedSize(image.size());
+    setMinimumSize(0, 0);
+    setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     update();
 }
 
 void AnnotationEditor::updateCrop(const QRect &geometry, const QImage &image) {
     commitFloatingText();
     m_baseImage = image;
+    setMinimumSize(0, 0);
+    setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     setGeometry(geometry);
-    setFixedSize(image.size());
     update();
 }
 
@@ -76,10 +78,13 @@ QImage AnnotationEditor::getRenderedImage() const {
     if (m_baseImage.isNull()) return QImage();
 
     QImage result = m_baseImage.copy();
+    double sx = (width() > 0) ? (static_cast<double>(result.width()) / width()) : 1.0;
+    double sy = (height() > 0) ? (static_cast<double>(result.height()) / height()) : 1.0;
+
     // Apply blur pixelations directly to pixel buffer first
     for (const auto &cmd : m_history.commands()) {
         if (auto *blur = dynamic_cast<const BlurCommand *>(cmd.get())) {
-            blur->applyToImage(result);
+            blur->applyToImage(result, sx, sy);
         }
     }
 
@@ -88,6 +93,9 @@ QImage AnnotationEditor::getRenderedImage() const {
     p.setRenderHint(QPainter::Antialiasing, true);
     p.setRenderHint(QPainter::TextAntialiasing, true);
     p.setRenderHint(QPainter::SmoothPixmapTransform, true);
+    if (sx != 1.0 || sy != 1.0) {
+        p.scale(sx, sy);
+    }
 
     for (const auto &cmd : m_history.commands()) {
         if (!dynamic_cast<const BlurCommand *>(cmd.get())) {
@@ -184,9 +192,9 @@ void AnnotationEditor::paintEvent(QPaintEvent *event) {
     p.setRenderHint(QPainter::Antialiasing, true);
     p.setRenderHint(QPainter::TextAntialiasing, true);
 
-    // Draw base image
+    // Draw base image filling widget bounds
     if (!m_baseImage.isNull()) {
-        p.drawImage(0, 0, m_baseImage);
+        p.drawImage(rect(), m_baseImage);
     }
 
     // Draw all commands from history
@@ -283,7 +291,9 @@ void AnnotationEditor::mouseReleaseEvent(QMouseEvent *event) {
         if (cmd) {
             // For blur command, cache the pixelation from the current base image
             if (auto *blur = dynamic_cast<BlurCommand *>(cmd.get())) {
-                blur->cachePixelation(m_baseImage);
+                double sx = (width() > 0) ? (static_cast<double>(m_baseImage.width()) / width()) : 1.0;
+                double sy = (height() > 0) ? (static_cast<double>(m_baseImage.height()) / height()) : 1.0;
+                blur->cachePixelation(m_baseImage, sx, sy);
             }
             m_history.addCommand(std::move(cmd));
             emit imageModified();

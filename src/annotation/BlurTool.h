@@ -9,11 +9,12 @@ public:
     BlurCommand(const QRectF &rect, int blockSize = 12);
 
     void paint(QPainter &painter) const override;
-    void applyToImage(QImage &image) const override;
+    void applyToImage(QImage &image) const override { applyToImage(image, 1.0, 1.0); }
+    void applyToImage(QImage &image, qreal scaleX, qreal scaleY) const;
     QString description() const override { return "Blur / Pixelate"; }
     std::unique_ptr<AnnotationCommand> clone() const override;
 
-    void cachePixelation(const QImage &sourceImage);
+    void cachePixelation(const QImage &sourceImage, qreal scaleX = 1.0, qreal scaleY = 1.0);
 
 private:
     QRectF m_rect;

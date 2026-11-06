@@ -1,0 +1,16 @@
+[Desktop Entry]
+Name=LinuxShot
+GenericName=Screenshot Utility
+Comment=Capture, annotate, and share screenshots
+Exec=linuxshot %F
+Icon=org.linuxshot.LinuxShot
+Terminal=false
+Type=Application
+Categories=Utility;Graphics;
+Keywords=screenshot;capture;screen;snippet;annotation;
+StartupNotify=true
+Actions=Capture;
+
+[Desktop Action Capture]
+Name=Take Screenshot
+Exec=linuxshot

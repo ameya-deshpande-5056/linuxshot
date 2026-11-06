@@ -5,16 +5,23 @@ BlurCommand::BlurCommand(const QRectF &rect, int blockSize)
 {
 }
 
-void BlurCommand::cachePixelation(const QImage &sourceImage) {
+void BlurCommand::cachePixelation(const QImage &sourceImage, qreal scaleX, qreal scaleY) {
     if (sourceImage.isNull() || m_rect.isEmpty()) return;
 
-    QRect target = m_rect.toRect().intersected(sourceImage.rect());
+    QRect target(
+        qRound(m_rect.x() * scaleX),
+        qRound(m_rect.y() * scaleY),
+        qRound(m_rect.width() * scaleX),
+        qRound(m_rect.height() * scaleY)
+    );
+    target = target.intersected(sourceImage.rect());
     if (target.isEmpty()) return;
 
+    int effBlock = qMax(4, qRound(m_blockSize * qMax(scaleX, scaleY)));
     QImage cropped = sourceImage.copy(target);
     // Downscale and upscale to create crisp pixelated mosaic
-    int smallW = qMax(1, cropped.width() / m_blockSize);
-    int smallH = qMax(1, cropped.height() / m_blockSize);
+    int smallW = qMax(1, cropped.width() / effBlock);
+    int smallH = qMax(1, cropped.height() / effBlock);
 
     QImage mosaic = cropped.scaled(smallW, smallH, Qt::IgnoreAspectRatio, Qt::FastTransformation)
                            .scaled(cropped.size(), Qt::IgnoreAspectRatio, Qt::FastTransformation);
@@ -24,7 +31,7 @@ void BlurCommand::cachePixelation(const QImage &sourceImage) {
 
 void BlurCommand::paint(QPainter &painter) const {
     if (!m_cachedMosaic.isNull()) {
-        painter.drawPixmap(m_rect.toRect().topLeft(), m_cachedMosaic);
+        painter.drawPixmap(m_rect.toRect(), m_cachedMosaic);
     } else {
         // Fallback representation in preview
         painter.save();
@@ -35,21 +42,28 @@ void BlurCommand::paint(QPainter &painter) const {
     }
 }
 
-void BlurCommand::applyToImage(QImage &image) const {
+void BlurCommand::applyToImage(QImage &image, qreal scaleX, qreal scaleY) const {
     if (image.isNull() || m_rect.isEmpty()) return;
 
-    QRect target = m_rect.toRect().intersected(image.rect());
+    QRect target(
+        qRound(m_rect.x() * scaleX),
+        qRound(m_rect.y() * scaleY),
+        qRound(m_rect.width() * scaleX),
+        qRound(m_rect.height() * scaleY)
+    );
+    target = target.intersected(image.rect());
     if (target.isEmpty()) return;
 
+    int effBlock = qMax(4, qRound(m_blockSize * qMax(scaleX, scaleY)));
     int bx = target.x();
     int by = target.y();
     int bw = target.width();
     int bh = target.height();
 
-    for (int y = by; y < by + bh; y += m_blockSize) {
-        for (int x = bx; x < bx + bw; x += m_blockSize) {
-            int blockW = qMin(m_blockSize, bx + bw - x);
-            int blockH = qMin(m_blockSize, by + bh - y);
+    for (int y = by; y < by + bh; y += effBlock) {
+        for (int x = bx; x < bx + bw; x += effBlock) {
+            int blockW = qMin(effBlock, bx + bw - x);
+            int blockH = qMin(effBlock, by + bh - y);
 
             uint64_t rSum = 0, gSum = 0, bSum = 0;
             int count = 0;

@@ -74,8 +74,9 @@ void SelectionOverlay::setupToolbars() {
     m_actionBar->addActionButton(IconHelper::actionIcon(IconHelper::Action::Cancel), "Cancel", "Cancel (Esc)");
 
     connect(m_actionBar, &Toolbar::actionTriggered, this, [this](const QString &action) {
-        QImage finalImg = m_editor->isVisible() ? m_editor->getRenderedImage()
-                                                : m_fullScreenshot.copy(m_selection);
+        QImage finalImg = (m_editor->isVisible() && !m_editor->getRenderedImage().isNull())
+                            ? m_editor->getRenderedImage()
+                            : croppedSelectionImage();
         hide();
         close();
         QGuiApplication::processEvents();
@@ -199,16 +200,47 @@ void SelectionOverlay::updateToolbarsPosition() {
     m_actionBar->updatePosition(m_selection, bounds);
 }
 
+QImage SelectionOverlay::croppedSelectionImage() const {
+    if (m_fullScreenshot.isNull() || !m_hasSelection || width() <= 0 || height() <= 0) {
+        return QImage();
+    }
+    double scaleX = static_cast<double>(m_fullScreenshot.width()) / width();
+    double scaleY = static_cast<double>(m_fullScreenshot.height()) / height();
+
+    int px = qRound(m_selection.x() * scaleX);
+    int py = qRound(m_selection.y() * scaleY);
+    int pw = qRound(m_selection.width() * scaleX);
+    int ph = qRound(m_selection.height() * scaleY);
+
+    px = qBound(0, px, m_fullScreenshot.width());
+    py = qBound(0, py, m_fullScreenshot.height());
+    if (m_selection.right() >= rect().right()) {
+        pw = m_fullScreenshot.width() - px;
+    } else {
+        pw = qBound(0, pw, m_fullScreenshot.width() - px);
+    }
+    if (m_selection.bottom() >= rect().bottom()) {
+        ph = m_fullScreenshot.height() - py;
+    } else {
+        ph = qBound(0, ph, m_fullScreenshot.height() - py);
+    }
+
+    if (pw <= 0 || ph <= 0) return QImage();
+    return m_fullScreenshot.copy(px, py, pw, ph);
+}
+
 void SelectionOverlay::finalizeSelectionCrop(bool isNewCapture) {
     if (m_selection.width() < 10 || m_selection.height() < 10) return;
 
-    QImage cropped = m_fullScreenshot.copy(m_selection);
+    QImage cropped = croppedSelectionImage();
+    if (cropped.isNull()) return;
+
     if (isNewCapture) {
         m_editor->setBaseImage(cropped);
+        m_editor->setGeometry(m_selection);
     } else {
         m_editor->updateCrop(m_selection, cropped);
     }
-    m_editor->setGeometry(m_selection);
     m_editor->show();
     m_editor->raise();
 
@@ -224,9 +256,9 @@ void SelectionOverlay::paintEvent(QPaintEvent *event) {
     QPainter p(this);
     p.setRenderHint(QPainter::Antialiasing, false);
 
-    // 1. Draw base desktop capture
+    // 1. Draw base desktop capture filling widget bounds
     if (!m_fullScreenshot.isNull()) {
-        p.drawImage(0, 0, m_fullScreenshot);
+        p.drawImage(rect(), m_fullScreenshot);
     }
 
     // 2. Draw darkened scrim over unselected area

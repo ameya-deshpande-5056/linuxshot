@@ -5,6 +5,24 @@ All notable changes to LinuxShot will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.1.4] - 2026-11-06
+
+### Added
+- Complete Flatpak packaging pipeline and standalone bundle builder (`packaging/build-flatpak.sh`).
+- AppStream metadata specification (`packaging/flatpak/org.linuxshot.LinuxShot.metainfo.xml`) for Flatpak app stores and desktop integration.
+- Dedicated Flatpak desktop launcher entry (`packaging/flatpak/org.linuxshot.LinuxShot.desktop`).
+- Continuous Integration Flatpak build verification job in `.github/workflows/ci.yml`.
+- Automated Flatpak release packaging job in `.github/workflows/release.yml` publishing `.flatpak` bundles and checksums alongside `.deb` and `.AppImage`.
+- Dedicated unit test suite `test_selection_overlay.cpp` verifying high-DPI scaling, full-desktop cropping, and sub-region coordinate mapping.
+- Scaled blur unit test `testBlurToolScaled` in `tests/test_annotation_tools.cpp`.
+
+### Fixed
+- Fixed truncated screen capture on displays with display zoom (> 100%) or fractional scaling:
+  - `X11CaptureBackend` now captures the root window using physical pixel dimensions rather than Qt logical screen coordinates via XCB-SHM and composite fallback.
+  - `SelectionOverlay` now maps logical widget coordinates to physical screenshot dimensions using aspect scaling factors in `croppedSelectionImage()`, eliminating missing bottom and right screen areas upon selection and export.
+  - `SelectionOverlay::paintEvent` now scales the desktop screenshot to the widget boundary rect to render 1:1 onto high-DPI backing stores without clipping.
+  - `AnnotationEditor` now scales vector annotations and blur pixelation mosaic blocks to match native display resolution when rendering final images.
+
 ## [0.1.3] - 2026-10-31
 
 ### Added
